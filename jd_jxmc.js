@@ -1,6 +1,6 @@
 /*
 惊喜牧场
-更新时间：2021-6-8
+更新时间：2021-6-13
 活动入口：京喜APP-我的-京喜牧场
 温馨提示：请先手动完成【新手指导任务】再运行脚本
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
@@ -33,6 +33,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 $.inviteCodeList = [];
 let cookiesArr = [];
 $.appId = 10028;
+$.helpCkList = [];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -52,9 +53,8 @@ if ($.isNode()) {
     return;
   }
   console.log('惊喜牧场\n' +
-      '更新时间：2021-6-8\n' +
-      '活动入口：京喜APP-我的-京喜牧场\n' +
-      '温馨提示：请先手动完成【新手指导任务】再运行脚本')
+    '活动入口：京喜APP-我的-京喜牧场\n' +
+    '温馨提示：请先手动完成【新手指导任务】再运行脚本');
   for (let i = 0; i < cookiesArr.length; i++) {
     $.index = i + 1;
     $.cookie = cookiesArr[i];
@@ -72,16 +72,50 @@ if ($.isNode()) {
       continue
     }
     await pasture();
-    await $.wait(3000);
+    await $.wait(2000);
   }
-
+  console.log('\n##################开始账号内互助#################\n');
+  let newCookiesArr = [];
+  for(let i = 0;i<$.helpCkList.length;i+=4){
+    newCookiesArr.push($.helpCkList.slice(i,i+4))
+  }
+  for (let i = 0; i < newCookiesArr.length; i++) {
+    let thisCookiesArr = newCookiesArr[i];
+    let codeList = [];
+    for (let j = 0; j < thisCookiesArr.length; j++) {
+      $.cookie = thisCookiesArr[j];
+      $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1])
+      for (let k = 0; k < $.inviteCodeList.length; k++) {
+        if ($.UserName === $.inviteCodeList[k].use) {
+          codeList.push({
+            'name': $.UserName,
+            'code': $.inviteCodeList[k].code
+          });
+        }
+      }
+    }
+    for (let j = 0; j < thisCookiesArr.length; j++) {
+      $.cookie = thisCookiesArr[j];
+      $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1])
+      for (let k = 0; k < codeList.length; k++) {
+        $.oneCodeInfo = codeList[k];
+        if(codeList[k].name === $.UserName){
+          continue;
+        }else{
+          console.log(`\n${$.UserName}去助力${codeList[k].name},助力码：${codeList[k].code}\n`);
+          await takeGetRequest('help');
+          await $.wait(2000);
+        }
+      }
+    }
+  }
 })()
-    .catch((e) => {
-      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-    })
-    .finally(() => {
-      $.done();
-    })
+  .catch((e) => {
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+  })
+  .finally(() => {
+    $.done();
+  })
 
 async function pasture() {
   try {
@@ -97,6 +131,15 @@ async function pasture() {
         return;
       }
       console.log('获取活动信息成功');
+      console.log(`互助码：${$.homeInfo.sharekey}`);
+      $.helpCkList.push($.cookie);
+      $.inviteCodeList.push(
+        {
+          'use':$.UserName,
+          'code':$.homeInfo.sharekey,
+          'max':false
+        }
+      );
       for (let i = 0; i < $.homeInfo.petinfo.length; i++) {
         $.onepetInfo = $.homeInfo.petinfo[i];
         $.petidList.push($.onepetInfo.petid);
@@ -135,12 +178,12 @@ async function pasture() {
           $.mowingInfo = {};
           console.log(`开始第${i + 1}次割草`);
           await takeGetRequest('mowing');
-          await $.wait(2000);
+          await $.wait(1000);
           if ($.mowingInfo.surprise === true) {
             //除草礼盒
             console.log(`领取除草礼盒`);
             await takeGetRequest('GetSelfResult');
-            await $.wait(5000);
+            await $.wait(3000);
           }
         }
 
@@ -205,6 +248,7 @@ async function pasture() {
 async function doTask() {
   for (let i = 0; i < $.taskList.length; i++) {
     $.oneTask = $.taskList[i];
+    //console.log($.oneTask.taskId);
     if ($.oneTask.dateType === 1) {//成就任务
       if ($.oneTask.awardStatus === 2 && $.oneTask.completedTimes === $.oneTask.targetTimes) {
         console.log(`完成任务：${$.oneTask.taskName}`);
@@ -244,7 +288,8 @@ async function takeGetRequest(type) {
       myRequest = getGetRequest(`GetHomePageInfo`, url);
       break;
     case 'GetUserTaskStatusList':
-      url = `https://m.jingxi.com/newtasksys/newtasksys_front/GetUserTaskStatusList?_=${Date.now() + 2}&source=jxmc&bizCode=jxmc&dateType=${$.dateType}&_stk=bizCode%2CdateType%2Csource&_ste=1`;
+      https://m.jingxi.com/newtasksys/newtasksys_front/GetUserTaskStatusList?_=1623404693642&source=jxmc&bizCode=jxmc&dateType=2&_stk=bizCode%2CdateType%2Csource&_ste=1&h5st=20210611174453641%3B3318642450258161%3B10028%3Btk01wee9f1d10a8nYmhQQlNzY2xlsYpdY%2Bxhj35GxtolIx4wFvjVz6e0Er7jCXJ5Jka9MBfjUruSe17Rs6IkhS9KYvAS%3B2bdb6c7cd6b475b87da7d58d7c743a87df10b6a76ebb0e8f3bb717ac366d7fbe&sceneval=2&g_login_type=1&g_ty=ajax
+        url = `https://m.jingxi.com/newtasksys/newtasksys_front/GetUserTaskStatusList?_=${Date.now() + 2}&source=jxmc&bizCode=jxmc&dateType=${$.dateType}&_stk=bizCode%2CdateType%2Csource&_ste=1`;
       url += `&h5st=${decrypt(Date.now(), '', '', url)}&sceneval=2&g_login_type=1&g_ty=ajax`;
       myRequest = getGetRequest(`GetUserTaskStatusList`, url);
       break;
@@ -293,6 +338,11 @@ async function takeGetRequest(type) {
       url = `https://m.jingxi.com/jxmc/operservice/GetSelfResult?channel=7&sceneid=1001&type=11&itemid=${$.onepetInfo.petid}&_stk=channel%2Citemid%2Csceneid%2Ctype&_ste=1`;
       url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(Math.floor(Math.random() * 26) + "A".charCodeAt(0))}&g_ty=ls`;
       myRequest = getGetRequest(`GetEgg`, url);
+      break;
+    case 'help':
+      url = `https://m.jingxi.com/jxmc/operservice/EnrollFriend?sharekey=${$.oneCodeInfo.code}&channel=7&sceneid=1001&_stk=channel%2Csceneid%2Csharekey&_ste=1`;
+      url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(Math.floor(Math.random() * 26) + "A".charCodeAt(0))}&g_ty=ls`;
+      myRequest = getGetRequest(`help`, url);
       break;
     default:
       console.log(`错误${type}`);
@@ -384,6 +434,20 @@ function dealReturn(type, data) {
     case 'DoTask':
       if (data.ret === 0) {
         console.log(`执行任务成功`);
+      }
+      break;
+    case 'help':
+      data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1]);
+      if (data.ret === 0 && data.data.result === 0 ) {
+        console.log(`助力成功`);
+      }else if (data.ret === 0 && data.data.result === 4){
+        console.log(`助力次数已用完 或者已助力`);
+        //$.canHelp = false;
+      }else if(data.ret === 0 && data.data.result === 5){
+        console.log(`助力已满`);
+        $.oneCodeInfo.max = true;
+      }else{
+        console.log(JSON.stringify(data))
       }
       break;
     default:
@@ -495,18 +559,18 @@ async function requestAlgo() {
 
 Date.prototype.Format = function (fmt) {
   var e,
-      n = this, d = fmt, l = {
-        "M+": n.getMonth() + 1,
-        "d+": n.getDate(),
-        "D+": n.getDate(),
-        "h+": n.getHours(),
-        "H+": n.getHours(),
-        "m+": n.getMinutes(),
-        "s+": n.getSeconds(),
-        "w+": n.getDay(),
-        "q+": Math.floor((n.getMonth() + 3) / 3),
-        "S+": n.getMilliseconds()
-      };
+    n = this, d = fmt, l = {
+      "M+": n.getMonth() + 1,
+      "d+": n.getDate(),
+      "D+": n.getDate(),
+      "h+": n.getHours(),
+      "H+": n.getHours(),
+      "m+": n.getMinutes(),
+      "s+": n.getSeconds(),
+      "w+": n.getDay(),
+      "q+": Math.floor((n.getMonth() + 3) / 3),
+      "S+": n.getMilliseconds()
+    };
   /(y+)/i.test(d) && (d = d.replace(RegExp.$1, "".concat(n.getFullYear()).substr(4 - RegExp.$1.length)));
   for (var k in l) {
     if (new RegExp("(".concat(k, ")")).test(d)) {
