@@ -1,11 +1,10 @@
-/*
-* author:star
-* */
+
 /*
 明星小店(星店长)
+脚本来自@star261
 助力逻辑：每个ck随机获取一个明星，然后会先内部助力，然后再助力内置助力码
 抽奖：是否中奖没判断，需自行查看
-更新时间：2021-06-13
+更新时间：2021-06-14
 脚本兼容: QuantumultX, Surge,Loon, JSBox, Node.js
 =================================Quantumultx=========================
 [task_local]
@@ -22,7 +21,6 @@ cron "0 1,21 * * *" script-path=jd_star_shop.js,tag=明星小店
 ====================================小火箭=============================
 明星小店 = type=cron,script-path=jd_star_shop.js, cronexpr="0 1,21 * * *", timeout=3600, enable=true
  */
-
 const $ = new Env('明星小店');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
