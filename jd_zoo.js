@@ -1,6 +1,7 @@
 /*
 618动物联萌
 解密参考自：https://github.com/yangtingxiao/QuantumultX/blob/master/scripts/jd/jd_zoo.js
+脚本来自@star261
 ===================quantumultx================
 [task_local]
 #618动物联萌
