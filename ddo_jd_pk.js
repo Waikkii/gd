@@ -5,6 +5,8 @@ cron 15 0,6,13,19,21 * * * ddo_pk.js
 
 更新了sign接口算法，修复api
 
+本脚本内置ddo的一个京享值pk码，介意勿用
+
 活动入口：京东APP-我的-京享值
 已支持IOS双京东账号,Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
