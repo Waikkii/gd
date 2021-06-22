@@ -49,9 +49,9 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
       '助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力作者\n' +
       '温馨提示：如提示助力火爆，可尝试寻找京东客服')
   let res = await getAuthorShareCode() || [];
-  let res2 = await getAuthorShareCode('http://cdn.annnibb.me/cf79ae6addba60ad018347359bd144d2.json') || [];
+  // let res2 = await getAuthorShareCode('https://cdn.jsdelivr.net/gh/zhaozhanzhan/jsdelivrCDN@main/shareCodes/jxhb.json') || [];
   if (res && res.activeId) $.activeId = res.activeId;
-  $.authorMyShareIds = [...((res && res.codes) || []), ...res2];
+  $.authorMyShareIds = [...((res && res.codes) || [])];
   //开启红包,获取互助码
   for (let i = 0; i < cookiesArr.length; i++) {
     $.index = i + 1;
@@ -78,12 +78,13 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
       await enrollFriend(code['strUserPin']);
       await $.wait(2500);
     }
-    if ($.canHelp) {
-      console.log(`\n【${$.UserName}】有剩余助力机会，开始助力作者\n`)
+    if ( $.canHelp ) {
+      // console.warn( "$.nickName",$.nickName);
+      console.log( `\n【${ $.nickName || $.UserName}】有剩余助力机会，开始助力作者\n`)
       for (let item of $.authorMyShareIds) {
         if (!item) continue;
         if (!$.canHelp) break
-        console.log(`【${$.UserName}】去助力作者的邀请码：${item}`);
+        console.log( `【${ $.nickName || $.UserName}】去助力作者的邀请码：${item}`);
         await enrollFriend(item);
         await $.wait(2500);
       }
@@ -98,7 +99,7 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
     for (let grade of grades) {
       if (!$.canOpenGrade) break;
       if (!$.packetIdArr[i]) continue;
-      console.log(`\n【${$.UserName}】去拆第${grade}个红包`);
+      console.log( `\n【${ $.nickName||$.UserName}】去拆第${grade}个红包`);
       await openRedPack($.packetIdArr[i]['strUserPin'], grade);
       await $.wait(1000);
     }
@@ -118,7 +119,8 @@ async function main() {
 function joinActive() {
   return new Promise(resolve => {
     const body = ""
-    const options = taskurl('JoinActive', body, 'activeId,channel,phoneid,publishFlag,stepreward_jstoken,timestamp');
+    const options = taskurl( 'JoinActive', body, 'activeId,channel,phoneid,publishFlag,stepreward_jstoken,timestamp' );
+    // console.warn( "options=================", options);
     $.get(options, (err, resp, data) => {
       try {
         if (err) {
@@ -243,7 +245,7 @@ function openRedPack(strPin, grade) {
   })
 }
 
-function getAuthorShareCode(url = "https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/shareCodes/jxhb.json") {
+function getAuthorShareCode ( url = "https://cdn.jsdelivr.net/gh/zhaozhanzhan/jsdelivrCDN@main/shareCodes/jxhb.json") {
   return new Promise(resolve => {
     const options = {
       url: `${url}?${new Date()}`, "timeout": 10000, headers: {
