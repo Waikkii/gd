@@ -23,8 +23,6 @@ if (process.env.InviterPin) {
   InviterPin = process.env.InviterPin;
 }
 
-$.log(InviterPin);
-
 
 
 
