@@ -5,24 +5,24 @@
 活动入口：京东APP首页-京东汽车-屏幕右中部，车主福利
 活动网页地址：https://h5.m.jd.com/babelDiy/Zeus/44bjzCpzH9GpspWeBzYSqBA7jEtP/index.html#/journey
 
-更新地址：jd_car_exchange
+更新地址：https://gitee.com/lxk0301/jd_scripts/raw/master/jd_car_exchange
 已支持IOS, Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, 小火箭，JSBox, Node.js
 
 ============Quantumultx===============
 [task_local]
 #京东汽车兑换
-0 0 * * * jd_car_exchange.js, tag=京东汽车兑换, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_redPacket.png, enabled=true
+0 0 * * * https://gitee.com/lxk0301/jd_scripts/raw/master/jd_car_exchange.js, tag=京东汽车兑换, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_redPacket.png, enabled=true
 
 ================Loon==============
 [Script]
-cron "0 0 * * *" script-path=jd_car_exchange.js, tag=京东汽车兑换
+cron "0 0 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_car_exchange.js, tag=京东汽车兑换
 
 ===============Surge=================
-京东汽车兑换 = type=cron,cronexp="0 0 * * *",wake-system=1,timeout=3600,script-path=jd_car_exchange.js
+京东汽车兑换 = type=cron,cronexp="0 0 * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_car_exchange.js
 
 ============小火箭=========
-京东汽车兑换 = type=cron,script-path=jd_car_exchange.js, cronexpr="0 0 * * *", timeout=3600, enable=true
+京东汽车兑换 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_car_exchange.js, cronexpr="0 0 * * *", timeout=3600, enable=true
  */
 const $ = new Env('京东汽车兑换');
 
@@ -48,7 +48,7 @@ const JD_API_HOST = 'https://car-member.jd.com/api/';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  for (let j = 0; j < 20; ++j)
+  for (let j = 0; j < 3; ++j)
     for (let i = 0; i < cookiesArr.length; i++) {
       if (cookiesArr[i]) {
         cookie = cookiesArr[i];
@@ -59,6 +59,7 @@ const JD_API_HOST = 'https://car-member.jd.com/api/';
         $.nickName = '';
         message = '';
         await jdCar();
+        await $.wait(2000)
       }
     }
 })()
@@ -82,11 +83,11 @@ function showMsg() {
 
 function exchange() {
   return new Promise(resolve => {
-    $.post(taskUrl('v1/user/exchange/bean'), (err, resp, data) => {
+    $.get(taskUrl('v1/user/exchange/bean/check'), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} user/exchange/bean API请求失败，请检查网路重试\n`)
+          //console.log(`${$.name} user/exchange/bean API请求失败，请检查网路重试\n`)
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
@@ -106,9 +107,9 @@ function taskUrl(function_id, body = {}) {
   return {
     url: `${JD_API_HOST}${function_id}?timestamp=${new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000}`,
     headers: {
-      "Accept": "*/*",
+      "Accept": "application/json,text/plain,*/*",
       "Accept-Encoding": "gzip, deflate, br",
-      "Accept-Language": "zh-cn",
+      "Accept-Language": "zh-CN,en-US;q=0.9",
       "Connection": "keep-alive",
       "Content-Type": "application/x-www-form-urlencoded",
       "Host": "car-member.jd.com",
