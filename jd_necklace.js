@@ -53,7 +53,10 @@ class ZooFakerNecklace {
         }
 
         const t = Math.floor(1e+6 * Math.random()).toString().padEnd(6, '8');
-        const pin = this.cookie.match(REG_PIN)[1];
+        //const pin = this.cookie.match(REG_PIN)[1];
+        const mpin = this.cookie.match(REG_PIN);
+        let pin = '-1';
+        if(mpin) pin = mpin[1];
         const { log } = smashUtils.get_risk_result({
             id: this.action,
             data: {
