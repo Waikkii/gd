@@ -345,7 +345,7 @@ class JDJRValidator {
             reject(e);
           }
         });
-      }).catch(e=>{
+      }).catch(err=>{
         console.log('生成validate需使用大陆IP')
       })
 
@@ -526,9 +526,6 @@ function injectToRequest(fn) {
     });
   };
 }
-
-exports.injectToRequest = injectToRequest;
-
 
 let cookiesArr = [], cookie = '', jdFruitShareArr = [], isBox = false, notify, newShareCodes, allMessage = '';
 $.get = injectToRequest($.get.bind($))
