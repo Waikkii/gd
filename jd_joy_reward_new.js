@@ -581,10 +581,6 @@ let flag = true;
       $.isLogin = true;
       $.nickName = '';
       await TotalBean();
-      if (!require('./JS_USER_AGENTS').HelloWorld) {
-        console.log(`\n【京东账号${$.index}】${$.nickName || $.UserName}：黑号等死\n`);
-        continue
-      }
       console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
