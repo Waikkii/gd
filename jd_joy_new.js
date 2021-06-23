@@ -345,7 +345,7 @@ class JDJRValidator {
             reject(e);
           }
         });
-      }).catch(err=>{
+      }).catch(e=>{
         console.log('生成validate需使用大陆IP')
       })
 
@@ -527,6 +527,9 @@ function injectToRequest(fn) {
   };
 }
 
+exports.injectToRequest = injectToRequest;
+
+
 let cookiesArr = [], cookie = '', jdFruitShareArr = [], isBox = false, notify, newShareCodes, allMessage = '';
 $.get = injectToRequest($.get.bind($))
 $.post = injectToRequest($.post.bind($))
@@ -545,6 +548,10 @@ $.post = injectToRequest($.post.bind($))
       $.isLogin = true;
       $.nickName = '';
       await TotalBean();
+      if (!require('./JS_USER_AGENTS').HelloWorld) {
+        console.log(`\n【京东账号${$.index}】${$.nickName || $.UserName}：运行环境检测失败\n`);
+        continue
+      }
       console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
