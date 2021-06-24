@@ -114,13 +114,15 @@ const DATA = {
 };
 const SERVER = 'iv.jd.com';
 class JDJRValidator {
-    constructor() {
+    constructor($) {
         this.data = {};
         this.x = 0;
         this.t = Date.now();
+        this.$=$;
     }
 
     async run() {
+        let cookie=''
         const tryRecognize = async () => {
             const x = await this.recognize();
 
@@ -138,10 +140,12 @@ class JDJRValidator {
         // console.log(pos[pos.length-1][2] -Date.now());
         // await sleep(4500);
         await sleep(pos[pos.length-1][2] - Date.now());
-        const result = await JDJRValidator.jsonp('/slide/s.html', { d, ...this.data });
+        const result = await JDJRValidator.jsonp('/slide/s.html', { d, ...this.data },cookie);
 
         if (result.message === 'success') {
             console.log(result);
+           // console.log($)
+            this.$.validator=result.validate
             console.log('JDJRValidator: %fs', (Date.now() - this.t) / 1000);
         } else {
             console.count(JSON.stringify(result));
@@ -150,8 +154,8 @@ class JDJRValidator {
         }
     }
 
-    async recognize() {
-        const data = await JDJRValidator.jsonp('/slide/g.html', { e: '' });
+    async recognize(cookie) {
+        const data = await JDJRValidator.jsonp('/slide/g.html', { e: '' },cookie);
         const { bg, patch, y } = data;
         const uri = 'data:image/png;base64,';
         const re = new PuzzleRecognizer(uri+bg, uri+patch, y);
@@ -187,7 +191,7 @@ class JDJRValidator {
         console.timeEnd('PuzzleRecognizer');
     }
 
-    static jsonp(api, data = {}) {
+    static jsonp(api, data = {},cookie) {
         return new Promise((resolve, reject) => {
             const fnId = `jsonp_${String(Math.random()).replace('.', '')}`;
             const extraData = { callback: fnId };
@@ -392,6 +396,4 @@ class MousePosFaker {
     }
 }
 
-new JDJRValidator().run();
-// new JDJRValidator().report(1000);
-// console.log(getCoordinate(new MousePosFaker(100).run()));
+module.exports = JDJRValidator;
