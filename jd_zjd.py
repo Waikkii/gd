@@ -129,8 +129,9 @@ def starAssist(sid, headers):
         timestamp = int(round(t * 1000))
         url = 'https://api.m.jd.com/api?functionId=vvipclub_distributeBean_startAssist&body={%22activityIdEncrypted%22:%22' + sid + '%22,%22channel%22:%22FISSION_BEAN%22}&appid=swat_miniprogram&client=tjj_m&screen=1920*1080&osVersion=5.0.0&networkType=wifi&sdkName=orderDetail&sdkVersion=1.0.0&clientVersion=3.1.3&area=11&fromType=wxapp&timestamp=' + str(timestamp)
         resp = requests.get(url=url, headers=headers, verify=False, timeout=30).json()
-        # if resp['success']:
-        #     print(resp)
+        if resp['success']!=True:
+            print(resp)
+            return 0
     except Exception as e:
         return starAssist(sid, headers)
 
