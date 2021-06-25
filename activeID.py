@@ -13,34 +13,20 @@ def GET_TUAN_ID():
             return TUAN_ACTIVEID
         else:
             m -= 1
-    while n:
-        url = 'https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/shareCodes/jd_updateFactoryTuanId.json'
-        r = requests.get(url)
-        if r.ok:
-            TUAN_ACTIVEID = r.json()['tuanActiveId']
-            return TUAN_ACTIVEID
-        else:
-            n -= 1
+    # while n:
+    #     url = 'https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/shareCodes/jd_updateFactoryTuanId.json'
+    #     r = requests.get(url)
+    #     if r.ok:
+    #         TUAN_ACTIVEID = r.json()['tuanActiveId']
+    #         return TUAN_ACTIVEID
+    #     else:
+    #         n -= 1
     return False
 
 
 def TUAN_ACTIVEID():
     TUAN_ACTIVEID = GET_TUAN_ID()
-    if TUAN_ACTIVEID:
-        with open(f"{env}/config/config.sh", 'r', encoding='utf-8') as f1:
-            configs = f1.read()
-        if configs.find(f"export TUAN_ACTIVEID=") != -1:
-            configs = re.sub(f'TUAN_ACTIVEID=(\"|\').*(\"|\')', f'TUAN_ACTIVEID="{TUAN_ACTIVEID}"', configs)
-            msg = "替换京喜工厂团ID成功"
-        else:
-            msg = "程序没有找到设置京喜工厂团的变量值，无法完成替换"
-            return msg
-        with open(f"{env}/config/config.sh", 'w', encoding='utf-8') as f2:
-            f2.write(configs)
-        return msg
-    else:
-        msg = "无法从页面读取京喜工厂团ID，无法完成替换"
-        return msg
+    print(TUAN_ACTIVEID)
 
 
 def findCrontab():
@@ -113,16 +99,16 @@ if __name__ == '__main__':
         isv4 = True
         if not os.path.isfile(f'{env}/config/config.sh'):  # v4-bot 容器内
             env = '/jd'
-    bot = f'{env}/config/bot.json'
-    with open(bot, 'r', encoding='utf-8') as botSet:
-        bot = json.load(botSet)
-    cron = '' # 此处 V4 用户需要自行设置 cron 表达式，否则程序自动设置为 jd_dreamFactory.js 的运行时间
-    if env == '/jd':
-        if len(cron) < 9:
-            cron = findCrontab()
-        checkCrontab()
+    # bot = f'{env}/config/bot.json'
+    # with open(bot, 'r', encoding='utf-8') as botSet:
+    #     bot = json.load(botSet)
+    # cron = '' # 此处 V4 用户需要自行设置 cron 表达式，否则程序自动设置为 jd_dreamFactory.js 的运行时间
+    # if env == '/jd':
+    #     if len(cron) < 9:
+    #         cron = findCrontab()
+    #     checkCrontab()
     msg = TUAN_ACTIVEID()
-    try:
-        tgNofity(bot['user_id'], bot['bot_token'], msg)
-    except:
-        None
+    # try:
+    #     tgNofity(bot['user_id'], bot['bot_token'], msg)
+    # except:
+    #     None
