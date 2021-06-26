@@ -21,6 +21,9 @@ cron "0 1,21 * * *" script-path=jd_star_shop.js,tag=明星小店
 ====================================小火箭=============================
 明星小店 = type=cron,script-path=jd_star_shop.js, cronexpr="0 1,21 * * *", timeout=3600, enable=true
  */
+/*
+明星小店(星店长)
+ */
 const $ = new Env('明星小店');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -196,7 +199,7 @@ async function main() {
         }
     }
     if(sendMessage){
-        sendMessage += `填写收货地址路径：\n京东首页，搜索明星（蔡徐坤），进入明星小店，我的礼物，填写收货地址`;
+        sendMessage += `填写收货地址路径：\n京东首页，搜索明星（陈坤），进入明星小店，我的礼物，填写收货地址`;
         await notify.sendNotify(`星店长`, sendMessage);
     }
 }
