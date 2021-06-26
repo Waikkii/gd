@@ -14,7 +14,7 @@ updateTime: 2021.6.26 8:34
 #ck 优先读取ENV的 变量 JD_COOKIE='ck1&ck2'  再到 【JDCookies.txt】 文件内的ck 最后才到脚本内 cookies=ck
 cookies=''
 #助力账号，如给账号1 2 10助力，则填 zlzh = [1,2,10] ,支持ENV export zlzh=[1,2,10]
-zlzh = [1, 2, 3, 4, 5]
+zlzh = [1, ]
 #####
 
 
