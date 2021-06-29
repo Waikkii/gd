@@ -72,6 +72,7 @@ if __name__ == '__main__':
     # cookies = ['ck1','ck2','ck3']
     cookies = []
     if os.environ.get("JOYPRO_JD_COOKIE"):
+        print("xxxxxxxxxxxxxx", os.environ.get("JOYPRO_JD_COOKIE"))
         cookies.append(os.environ.get("JOYPRO_JD_COOKIE").split('&'))
     lock = threading.BoundedSemaphore(20)
     if 'test' in os.getcwd():
@@ -82,5 +83,7 @@ if __name__ == '__main__':
         validates = f.read().split('\n')[:-1]
     print(f"====================共{len(cookies)}个京东账号Cookie=========")
     for i in range(min(len(validates), len(cookies))):
+        print(cookies[i])
+        print(type(cookies[i])
         lock.acquire()
         threading.Thread(target=main, args=(str(cookies[i]), validates[i])).start()
