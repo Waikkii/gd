@@ -84,6 +84,6 @@ if __name__ == '__main__':
     print(f"====================共{len(cookies)}个京东账号Cookie=========")
     for i in range(min(len(validates), len(cookies))):
         print(cookies[i])
-        print(type(cookies[i])
+        print(type(cookies[i]))
         lock.acquire()
         threading.Thread(target=main, args=(str(cookies[i]), validates[i])).start()
