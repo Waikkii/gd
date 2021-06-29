@@ -19,7 +19,7 @@ import datetime
 import requests
 
 
-def main(cookie, validate):
+def main(i, cookie, validate):
     target = 500 or os.environ.get('JD_JOY_REWARD_NAME')
     headers = {
         'Host': 'jdjoy.jd.com',
@@ -45,6 +45,8 @@ def main(cookie, validate):
     if 16 <= h < 24:
         config = tasks['data']['beanConfigs16']
 
+    print("第", i+1, "个账号，", "当前时间：", datetime.datetime.now())
+
     for bean in config:
         sys.stdout.write(f"{bean['id']} {bean['giftName']} {bean['leftStock']}\n")
         if bean['giftValue'] == target:
@@ -52,7 +54,7 @@ def main(cookie, validate):
                 if datetime.datetime.now().second == 0:
                     break
                 time.sleep(0.1)
-            sys.stdout.write('exchange()\n')
+            #sys.stdout.write('exchange()\n')
             url = f"https://jdjoy.jd.com/common/gift/new/exchange?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE&validate={validate}"
             data = {"buyParam": {"orderSource": 'pet', "saleInfoId": bean['id']}, "deviceInfo": {}}
             res = requests.post(url, headers=headers, data=json.dumps(data)).json()
@@ -78,4 +80,4 @@ if __name__ == '__main__':
     print(f"====================共{len(cookies)}个京东账号Cookie=========")
     for i in range(min(len(validates), len(cookies))):
         lock.acquire()
-        threading.Thread(target=main, args=[cookies[i], validates[i]]).start()
+        threading.Thread(target=main, args=[i, cookies[i], validates[i]]).start()
