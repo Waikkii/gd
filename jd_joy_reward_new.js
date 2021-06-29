@@ -73,6 +73,7 @@ let validate = '', cookiesArr = [];
 
 function init() {
   return new Promise(resolve => {
+    console.log('validate1: ',validate)
     $.get({
       url: `https://jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE&validate=${validate}`,
       headers: {
@@ -100,8 +101,8 @@ function init() {
 
 function exchange(beanId) {
   console.log('exchange()')
+  console.log('validate2: ',validate)
   return new Promise(async resolve => {
-
     while (1) {
       if (new Date().getSeconds() < 30) {
         break
