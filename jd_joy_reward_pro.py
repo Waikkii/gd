@@ -29,13 +29,16 @@ def main(cookie, validate):
         "User-Agent": '23',
         'referer': 'https://jdjoy.jd.com/',
         'accept-language': 'zh-cn',
-        'cookie': cookie
+        'cookie': str(cookie)
     }
     print(cookie)
     print(validate)
     url = f"https://jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE&validate={validate}"
     tasks = requests.get(url, headers=headers).json()
     print(tasks)
+    if tasks['data']==None:
+        print("未登录")
+        lock.release()
     h = datetime.datetime.now().hour
     config = {}
     if 0 <= h < 8:
