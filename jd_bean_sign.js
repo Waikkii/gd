@@ -215,7 +215,7 @@ function TotalBean() {
     })
   })
 }
-function downloadUrl(url = 'https://raw.githubusercontent.com/Waikkii/gd/main/tool/JD_DailyBonus.js') {
+function downloadUrl(url = 'https://cdn.jsdelivr.net/gh/Waikkii/gd/tool/JD_DailyBonus.js') {
   return new Promise(resolve => {
     const options = { url, "timeout": 10000 };
     if ($.isNode() && process.env.TG_PROXY_HOST && process.env.TG_PROXY_PORT) {
