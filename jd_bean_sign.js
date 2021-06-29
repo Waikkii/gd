@@ -116,11 +116,11 @@ async function downFile () {
   let url = '';
   await downloadUrl();
   if ($.body) {
-    url = 'https://raw.githubusercontent.com/Waikkii/gd/main/tool/JD_DailyBonus.js';
+    url = 'https://cdn.jsdelivr.net/gh/Waikkii/gd/tool/JD_DailyBonus.js';//https://raw.githubusercontent.com/Waikkii/gd/main/tool/JD_DailyBonus.js
   } else {
     url = 'https://cdn.jsdelivr.net/gh/Waikkii/gd/tool/JD_DailyBonus.js';
   }
-  console.log(url);
+  console.log("JD_DailyBonus.js 文件下载地址更新为:"+url);
   try {
     const options = { }
     if (process.env.TG_PROXY_HOST && process.env.TG_PROXY_PORT) {
