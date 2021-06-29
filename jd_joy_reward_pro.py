@@ -31,8 +31,11 @@ def main(cookie, validate):
         'accept-language': 'zh-cn',
         'cookie': cookie
     }
+    print(cookie)
+    print(validate)
     url = f"https://jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE&validate={validate}"
     tasks = requests.get(url, headers=headers).json()
+    print(tasks)
     h = datetime.datetime.now().hour
     config = {}
     if 0 <= h < 8:
