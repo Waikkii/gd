@@ -30,7 +30,7 @@ def main(cookie, validate):
         "User-Agent": '23',
         'referer': 'https://jdjoy.jd.com/',
         'accept-language': 'zh-cn',
-        'cookie': cookie
+        'cookie': str(cookie)
     }
     print(headers)
     print(type(cookie))
@@ -87,4 +87,4 @@ if __name__ == '__main__':
         print(cookies[i])
         print(type(cookies[i]))
         lock.acquire()
-        threading.Thread(target=main, args=(str(cookies[i]), validates[i])).start()
+        threading.Thread(target=main, args=(cookies[i], validates[i])).start()
