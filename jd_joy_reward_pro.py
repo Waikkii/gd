@@ -31,9 +31,11 @@ def main(cookie, validate):
         'accept-language': 'zh-cn',
         'cookie': str(cookie)
     }
-    print(cookie)
+    print(headers)
+    print(type(cookie))
     print(validate)
     url = f"https://jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE&validate={validate}"
+    print(url)
     tasks = requests.get(url, headers=headers).json()
     print(tasks)
     if tasks['data']==None:
