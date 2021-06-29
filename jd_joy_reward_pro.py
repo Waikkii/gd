@@ -21,7 +21,6 @@ import requests
 
 def main(cookie, validate):
     target = 500 or os.environ.get('JD_JOY_REWARD_NAME')
-    print("aaaaaaaaaaaaaaaa", cookie)
     headers = {
         'Host': 'jdjoy.jd.com',
         'accept': '*/*',
@@ -30,15 +29,10 @@ def main(cookie, validate):
         "User-Agent": '23',
         'referer': 'https://jdjoy.jd.com/',
         'accept-language': 'zh-cn',
-        'cookie': str(cookie)
+        'cookie': cookie
     }
-    print(headers)
-    print(type(cookie))
-    print(validate)
     url = f"https://jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE&validate={validate}"
-    print(url)
     tasks = requests.get(url, headers=headers).json()
-    print(tasks)
     if tasks['data']==None:
         print("未登录")
         lock.release()
@@ -73,8 +67,7 @@ if __name__ == '__main__':
     # cookies = ['ck1','ck2','ck3']
     cookies = []
     if os.environ.get("JOYPRO_JD_COOKIE"):
-        print("xxxxxxxxxxxxxx", os.environ.get("JOYPRO_JD_COOKIE"))
-        cookies.append(os.environ.get("JOYPRO_JD_COOKIE").split('&'))
+        cookies=os.environ.get("JOYPRO_JD_COOKIE").split('&')
     lock = threading.BoundedSemaphore(20)
     if 'test' in os.getcwd():
         path = '..'
@@ -84,7 +77,5 @@ if __name__ == '__main__':
         validates = f.read().split('\n')[:-1]
     print(f"====================共{len(cookies)}个京东账号Cookie=========")
     for i in range(min(len(validates), len(cookies))):
-        print(cookies[i])
-        print(type(cookies[i]))
         lock.acquire()
-        threading.Thread(target=main, args=(cookies[i], validates[i])).start()
+        threading.Thread(target=main, args=[cookies[i], validates[i]]).start()
