@@ -311,7 +311,7 @@ function getUid() {
                 } else {
                     data = JSON.parse(data);
                     if (data.data) {
-                        if ($.index == 1 && $.index == 2) {
+                        if ($.index == 1 || $.index == 2) {
                             $.myid = data.data.uid
                             console.log(`账号1欧洲杯助力码为 ${$.myid}`)
                         }
