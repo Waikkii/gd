@@ -65,7 +65,7 @@ if __name__ == '__main__':
         # 'ck2',
         # 'ck3',
         # ...
-    ]_
+    ]
     if os.environ.get("JOYPRO_JD_COOKIE"):
         cookies.append(os.environ.get("JOYPRO_JD_COOKIE").split('&'))
     lock = threading.BoundedSemaphore(20)
