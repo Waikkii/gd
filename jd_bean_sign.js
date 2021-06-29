@@ -120,6 +120,7 @@ async function downFile () {
   } else {
     url = 'https://cdn.jsdelivr.net/gh/Waikkii/gd/tool/JD_DailyBonus.js';
   }
+  console.log(url);
   try {
     const options = { }
     if (process.env.TG_PROXY_HOST && process.env.TG_PROXY_PORT) {
