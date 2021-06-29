@@ -1,4 +1,3 @@
-Text.
 /*
 京享值PK
 cron 15 0,6,13,19,21 * * * ddo_pk.js
