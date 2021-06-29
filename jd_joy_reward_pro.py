@@ -16,7 +16,30 @@ import sys
 import threading
 import time
 import datetime
-	@@ -42,30 +43,26 @@ def main(cookie, validate):
+import requests
+
+
+def main(cookie, validate):
+    target = 500 or os.environ.get('JD_JOY_REWARD_NAME')
+    headers = {
+        'Host': 'jdjoy.jd.com',
+        'accept': '*/*',
+        'content-type': 'application/json',
+        'origin': 'https://h5.m.jd.com',
+        "User-Agent": '23',
+        'referer': 'https://jdjoy.jd.com/',
+        'accept-language': 'zh-cn',
+        'cookie': cookie
+    }
+    url = f"https://jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE&validate={validate}"
+    tasks = requests.get(url, headers=headers).json()
+    h = datetime.datetime.now().hour
+    config = {}
+    if 0 <= h < 8:
+        config = tasks['data']['beanConfigs0']
+    if 8 <= h < 16:
+        config = tasks['data']['beanConfigs8']
+    if 16 <= h < 24:
         config = tasks['data']['beanConfigs16']
 
     for bean in config:
