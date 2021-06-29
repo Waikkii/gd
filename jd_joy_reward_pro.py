@@ -21,6 +21,7 @@ import requests
 
 def main(cookie, validate):
     target = 500 or os.environ.get('JD_JOY_REWARD_NAME')
+    print("aaaaaaaaaaaaaaaa", cookie)
     headers = {
         'Host': 'jdjoy.jd.com',
         'accept': '*/*',
@@ -29,7 +30,7 @@ def main(cookie, validate):
         "User-Agent": '23',
         'referer': 'https://jdjoy.jd.com/',
         'accept-language': 'zh-cn',
-        'cookie': str(cookie)
+        'cookie': cookie
     }
     print(headers)
     print(type(cookie))
