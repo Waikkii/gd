@@ -7,130 +7,153 @@ Author: Curtin
 Date: 2021/6/25 下午9:16
 TG交流 https://t.me/topstyle996
 TG频道 https://t.me/TopStyle2021
-updateTime: 2021.6.26 8:34
+updateTime: 2021.7.1 11:22
 '''
 
 #####
-#ck 优先读取ENV的 变量 JD_COOKIE='ck1&ck2'  再到 【JDCookies.txt】 文件内的ck 最后才到脚本内 cookies=ck
+#ck 优先读取【JDCookies.txt】 文件内的ck  再到 ENV的 变量 JD_COOKIE='ck1&ck2' 最后才到脚本内 cookies=ck
 cookies=''
-#助力账号，如给账号1 2 10助力，则填 zlzh = [1,2,10] ,支持ENV export zlzh=[1,2,10]
-zlzh = [1, ]
+#助力账号，填写pt_pin或用户名的值，如 zlzh = ['aaaa','xxxx','yyyy'] ,支持ENV export zlzh=['CurtinLV','xxxx','yyyy']
+zlzh = ['Curtinlv', '买买买', '东哥']
 #####
 
 
 
 import os, re
-import requests
+try:
+    import requests
+except Exception as e:
+    print(e, "\n缺少requests 模块，请执行命令安装：python3 -m pip install requests")
+    exit(3)
 from urllib.parse import unquote
 import json
 import time
 requests.packages.urllib3.disable_warnings()
+pwd = os.path.dirname(os.path.abspath(__file__)) + os.sep
 t = time.time()
 aNum = 0
-
-def getCookie():
-    global cookies
-    pwd = os.path.dirname(os.path.abspath(__file__)) + os.sep
-    ckfile = pwd + 'JDCookies.txt'
-    try:
-        if os.path.exists(ckfile):
-            with open(ckfile, "r", encoding="utf-8") as f:
-                cks = f.read()
-                f.close()
-            if 'pt_key=' in cks and 'pt_pin=' in cks:
-                r = re.compile(r"pt_key=.*?pt_pin=.*?;", re.M | re.S | re.I)
-                cks = r.findall(cks)
-                if len(cks) > 0:
-                    cookies = ''
-                    for i in cks:
-                        cookies += i
+beanCount = 0
+class getJDCookie(object):
+    # 适配各种平台环境ck
+    def getckfile(self):
+        if os.path.exists('/ql/config/env.sh'):
+            print("当前环境青龙面板新版")
+            return '/ql/config/env.sh'
+        elif os.path.exists('/ql/config/cookie.sh'):
+            print("当前环境青龙面板旧版")
+            return '/ql/config/env.sh'
+        elif os.path.exists('/jd/config/config.sh'):
+            print("当前环境V4")
+            return '/jd/config/config.sh'
+        elif os.path.exists(pwd + 'JDCookies.txt'):
+            return pwd + 'JDCookies.txt'
         else:
-            with open(ckfile, "w", encoding="utf-8") as f:
-                cks = "#多账号换行，以下示例：（通过正则获取此文件的ck，理论上可以自定义名字标记ck，也可以随意摆放ck）\n账号1【Curtinlv】cookie1;\n账号2【TopStyle】cookie2;"
-                f.write(cks)
-                f.close()
-            pass
-    except Exception as e:
-        print(f"【getCookie Error】{e}")
-getCookie()
+            return pwd + 'JDCookies.txt'
+    # 获取cookie
+    def getCookie(self):
+        global cookies
+        ckfile = self.getckfile()
+        try:
+            if os.path.exists(ckfile):
+                with open(ckfile, "r", encoding="utf-8") as f:
+                    cks = f.read()
+                    f.close()
+                if 'pt_key=' in cks and 'pt_pin=' in cks:
+                    r = re.compile(r"pt_key=.*?pt_pin=.*?;", re.M | re.S | re.I)
+                    cks = r.findall(cks)
+                    if len(cks) > 0:
+                        cookies = ''
+                        for i in cks:
+                            cookies += i
+            else:
+                with open(pwd + 'JDCookies.txt', "w", encoding="utf-8") as f:
+                    cks = "#多账号换行，以下示例：（通过正则获取此文件的ck，理论上可以自定义名字标记ck，也可以随意摆放ck）\n账号1【Curtinlv】cookie1;\n账号2【TopStyle】cookie2;"
+                    f.write(cks)
+                    f.close()
+                pass
+        except Exception as e:
+            print(f"【getCookie Error】{e}")
+
+    # 检测cookie格式是否正确
+    def getUserInfo(self, ck, pinName, userNum):
+        url = 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New&callSource=mainorder&channel=4&isHomewhite=0&sceneval=2&sceneval=2&callback=GetJDUserInfoUnion'
+        headers = {
+            'Cookie': ck,
+            'Accept': '*/*',
+            'Connection': 'close',
+            'Referer': 'https://home.m.jd.com/myJd/home.action',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Host': 'me-api.jd.com',
+            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1',
+            'Accept-Language': 'zh-cn'
+        }
+        try:
+            resp = requests.get(url=url, verify=False, headers=headers, timeout=60).text
+            r = re.compile(r'GetJDUserInfoUnion.*?\((.*?)\)')
+            result = r.findall(resp)
+            userInfo = json.loads(result[0])
+            nickname = userInfo['data']['userInfo']['baseInfo']['nickname']
+            return ck, nickname
+        except Exception:
+            context = f"账号{userNum}【{pinName}】Cookie 已失效！请重新获取。"
+            print(context)
+            return ck, False
+
+    def iscookie(self):
+        """
+        :return: cookiesList,userNameList,pinNameList
+        """
+        cookiesList = []
+        userNameList = []
+        pinNameList = []
+        if 'pt_key=' in cookies and 'pt_pin=' in cookies:
+            r = re.compile(r"pt_key=.*?pt_pin=.*?;", re.M | re.S | re.I)
+            result = r.findall(cookies)
+            if len(result) >= 1:
+                print("您已配置{}个账号".format(len(result)))
+                u = 1
+                for i in result:
+                    r = re.compile(r"pt_pin=(.*?);")
+                    pinName = r.findall(i)
+                    pinName = unquote(pinName[0])
+                    # 获取账号名
+                    ck, nickname = self.getUserInfo(i, pinName, u)
+                    if nickname != False:
+                        cookiesList.append(ck)
+                        userNameList.append(nickname)
+                        pinNameList.append(pinName)
+                    else:
+                        u += 1
+                        continue
+                    u += 1
+                if len(cookiesList) > 0 and len(userNameList) > 0:
+                    return cookiesList, userNameList, pinNameList
+                else:
+                    print("没有可用Cookie，已退出")
+                    exit(3)
+            else:
+                print("cookie 格式错误！...本次操作已退出")
+                exit(4)
+        else:
+            print("cookie 格式错误！...本次操作已退出")
+            exit(4)
+
+
+
 # 获取系统ENV环境参数优先使用 适合Ac、云服务等环境
 # JD_COOKIE=cookie （多账号&分隔）
 if "JD_COOKIE" in os.environ:
     if len(os.environ["JD_COOKIE"]) > 10:
         cookies = os.environ["JD_COOKIE"]
         print("已获取并使用Env环境 Cookie")
-# JD_COOKIE=cookie （多账号&分隔）
 if "zlzh" in os.environ:
     if len(os.environ["zlzh"]) > 1:
         zlzh = os.environ["zlzh"]
-        zlzh = zlzh.replace('[', '').replace(']', '').split(',')
-        print(type(zlzh))
-        print(zlzh)
-        print("已获取并使用Env环境 zlzh")
+        zlzh = zlzh.replace('[', '').replace(']', '').replace('\'', '').replace(' ', '').split(',')
+        print("已获取并使用Env环境 zlzh:", zlzh)
 
-
-# 检测cookie格式是否正确
-def getUserInfo(ck, pinName, userNum):
-    url = 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New&callSource=mainorder&channel=4&isHomewhite=0&sceneval=2&sceneval=2&callback=GetJDUserInfoUnion'
-    headers = {
-        'Cookie': ck,
-        'Accept': '*/*',
-        'Connection': 'close',
-        'Referer': 'https://home.m.jd.com/myJd/home.action',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Host': 'me-api.jd.com',
-        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1',
-        'Accept-Language': 'zh-cn'
-    }
-    try:
-        resp = requests.get(url=url, verify=False, headers=headers, timeout=60).text
-        r = re.compile(r'GetJDUserInfoUnion.*?\((.*?)\)')
-        result = r.findall(resp)
-        userInfo = json.loads(result[0])
-        nickname = userInfo['data']['userInfo']['baseInfo']['nickname']
-        return ck, nickname
-    except Exception:
-        context = f"账号{userNum}【{pinName}】Cookie 已失效！请重新获取。"
-        print(context)
-        return ck, False
-def iscookie():
-    """
-    :return: cookiesList,userNameList,pinNameList
-    """
-    cookiesList = []
-    userNameList = []
-    pinNameList = []
-    if 'pt_key=' in cookies and 'pt_pin=' in cookies:
-        r = re.compile(r"pt_key=.*?pt_pin=.*?;", re.M | re.S | re.I)
-        result = r.findall(cookies)
-        if len(result) >= 1:
-            print("您已配置{}个账号".format(len(result)))
-            u = 1
-            for i in result:
-                r = re.compile(r"pt_pin=(.*?);")
-                pinName = r.findall(i)
-                pinName = unquote(pinName[0])
-                # 获取账号名
-                ck, nickname = getUserInfo(i, pinName, u)
-                if nickname != False:
-                    cookiesList.append(ck)
-                    userNameList.append(nickname)
-                    pinNameList.append(pinName)
-                else:
-                    u += 1
-                    continue
-                u += 1
-            if len(cookiesList) > 0 and len(userNameList) > 0:
-                return cookiesList, userNameList, pinNameList
-            else:
-                print("没有可用Cookie，已退出")
-                exit(3)
-        else:
-            print("cookie 格式错误！...本次操作已退出")
-            exit(4)
-    else:
-        print("cookie 格式错误！...本次操作已退出")
-        exit(4)
+getCk = getJDCookie()
+getCk.getCookie()
 
 # 开启助力任务
 def starAssist(sid, headers):
@@ -138,9 +161,7 @@ def starAssist(sid, headers):
     try:
         timestamp = int(round(t * 1000))
         url = 'https://api.m.jd.com/api?functionId=vvipclub_distributeBean_startAssist&body={%22activityIdEncrypted%22:%22' + sid + '%22,%22channel%22:%22FISSION_BEAN%22}&appid=swat_miniprogram&client=tjj_m&screen=1920*1080&osVersion=5.0.0&networkType=wifi&sdkName=orderDetail&sdkVersion=1.0.0&clientVersion=3.1.3&area=11&fromType=wxapp&timestamp=' + str(timestamp)
-        resp = requests.get(url=url, headers=headers, verify=False, timeout=30).json()
-        # if resp['success']:
-        #     print(resp)
+        requests.get(url=url, headers=headers, verify=False, timeout=30).json()
         aNum = 0
     except Exception as e:
         if aNum < 5:
@@ -160,9 +181,14 @@ def getShareCode(headers):
         responses = requests.post(url, headers=headers, data=body, verify=False, timeout=30).json()
         if responses['success']:
             data = responses['data']
-            assistStartRecordId = data['assistStartRecordId']
-            encPin = data['encPin']
             sid = data['id']
+            encPin = data['encPin']
+            try:
+                assistStartRecordId = data['assistStartRecordId']
+            except:
+                starAssist(sid, header)
+                return getShareCode(headers)
+            aNum = 0
             return assistStartRecordId, encPin, sid
     except Exception as e:
         if aNum < 5:
@@ -187,6 +213,7 @@ def setHeaders(cookie):
     return headers
 
 def assist(ck, sid, eid, aid, user, name, a):
+    global beanCount
     timestamp = int(round(t * 1000))
     headers = {
         'Cookie': ck + 'wxclient=gxhwx;ie_ai=1;',
@@ -204,32 +231,47 @@ def assist(ck, sid, eid, aid, user, name, a):
     if resp['success']:
         print(f"用户{a}【{user}】助力【{name}】成功~")
         if resp['data']['assistedNum'] == 4:
-            print("开启下一轮助力")
+            beanCount += 80
+            print(f"{name}, 恭喜获得8毛京豆，以到账为准。")
+            print("## 开启下一轮助力")
             starAssist(sid, header)
             getShareCode(header)
     else:
-        print(f"用户{a}【{user}】助力【{name}】失败！！！")
+        print(f"用户{a}【{userNameList[a-1]}】没有助力次数了。")
+
 
 
 
 #开始互助
 def start():
-    global header
+    global header,cookiesList, userNameList, pinNameList
     print("微信小程序-赚京豆-瓜分助力")
-    cookiesList, userNameList, pinNameList = iscookie()
-    for ckNum in zlzh:
-        print(f"### 开始助力账号【{userNameList[int(ckNum)-1]}】###")
-        header = setHeaders(cookiesList[int(ckNum)-1])
+    cookiesList, userNameList, pinNameList = getCk.iscookie()
+    for ckname in zlzh:
+        try:
+            ckNum = userNameList.index(ckname)
+        except Exception as e:
+            try:
+                ckNum = pinNameList.index(ckname)
+            except:
+                print("请检查助力账号名称是否正确？提示：助力名字可填pt_pin的值、也可以填用户名。")
+                exit(9)
+
+        print(f"### 开始助力账号【{userNameList[int(ckNum)]}】###")
+
+        header = setHeaders(cookiesList[int(ckNum)])
         getShareCode(header)
         starAssist(sid, header)
         getShareCode(header)
         a = 1
         for i, name in zip(cookiesList, userNameList):
-            if a == ckNum:
+            if a == ckNum+1:
                 a += 1
             else:
-                assist(i, sid, encPin, assistStartRecordId, name, userNameList[int(ckNum)-1], a)
+                assist(i, sid, encPin, assistStartRecordId, name, userNameList[int(ckNum)], a)
                 a += 1
+        if beanCount > 0:
+            print(f'\n### 本次累计获得{beanCount}京豆')
 
 if __name__ == '__main__':
     start()
