@@ -19,7 +19,7 @@ class FoodRunning:
             headers={
                 'Host': 'api.m.jd.com',
                 'accept': '*/*',
-                'user-agent': userAgent(),
+                'user-agent': self.userAgent(),
                 'content-type': 'application/x-www-form-urlencoded',
                 'Cookie': self.cooke
             }, data='body=%7B%22id%22%3A%22%22%2C%22url%22%3A%22https%3A//xinruidddj-isv.isvjcloud.com%22%7D').json()
