@@ -19,11 +19,22 @@ class FoodRunning:
             headers={
                 'Host': 'api.m.jd.com',
                 'accept': '*/*',
-                'user-agent': USER_AGENTS,
+                'user-agent': userAgent(),
                 'content-type': 'application/x-www-form-urlencoded',
                 'Cookie': self.cooke
             }, data='body=%7B%22id%22%3A%22%22%2C%22url%22%3A%22https%3A//xinruidddj-isv.isvjcloud.com%22%7D').json()
         return res['token']
+    
+    def userAgent(self):
+        """
+        随机生成一个UA
+        :return:
+        """
+        uuid = ''.join(random.sample('123456789abcdef123456789abcdef123456789abcdef123456789abcdef', 40))
+        iosVer = ''.join(random.sample(["14.5.1", "14.4", "14.3", "14.2", "14.1", "14.0.1", "13.7", "13.1.2", "13.1.1"], 1))
+        iPhone = ''.join(random.sample(["8", "9", "10", "11", "12", "13"], 1))
+        return f'jdapp;iPhone;10.0.4;{iosVer};{uuid};network/wifi;ADID/8679C062-A41A-4A25-88F1-50A7A3EEF34A;model/iPhone{iPhone},1;addressid/3723896896;appBuild/167707;jdSupportDarkMode/0'
+        return UserAgent
 
     def api(self, fn):
         headers = {
