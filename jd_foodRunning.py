@@ -43,7 +43,7 @@ class FoodRunning:
             'Connection': 'keep-alive',
             'X-Requested-With': 'XMLHttpRequest',
             'Host': 'jinggengjcq-isv.isvjcloud.com',
-            'User-Agent': USER_AGENTS,
+            'User-Agent': self.userAgent(),
             'Content-Type': 'application/json; charset=UTF-8',
             'Accept': 'application/json',
             'Origin': 'https://jinggengjcq-isv.isvjcloud.com',
@@ -70,7 +70,7 @@ class FoodRunning:
         if body is None:
             body = {}
         headers = {
-            'User-Agent': USER_AGENTS,
+            'User-Agent': self.userAgent(),
             'Accept': 'application/json',
             'Origin': 'https://jinggengjcq-isv.isvjcloud.com',
             'Referer': 'https://jinggengjcq-isv.isvjcloud.com/paoku/index.html',
