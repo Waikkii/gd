@@ -45,7 +45,7 @@ def main(i, cookie, validate):
     if 16 <= h < 24:
         config = tasks['data']['beanConfigs16']
 
-    print("第", i+1, "个账号，", "当前时间：", datetime.datetime.now())
+    #print("第", i+1, "个账号，", "当前时间：", datetime.datetime.now())
 
     for bean in config:
         sys.stdout.write(f"{bean['id']} {bean['giftName']} {bean['leftStock']}\n")
@@ -59,6 +59,7 @@ def main(i, cookie, validate):
             data = {"buyParam": {"orderSource": 'pet', "saleInfoId": bean['id']}, "deviceInfo": {}}
             res = requests.post(url, headers=headers, data=json.dumps(data)).json()
             sys.stdout.write(json.dumps(res) + '\n')
+            print("第", i+1, "个账号，", "当前时间：", datetime.datetime.now())
             if res['errorCode'] == 'buy_success':
                 sys.stdout.write(f"cookie{cookie.split('pt_pin=')[1].replace(';', '')}兑换成功\n")
     lock.release()
