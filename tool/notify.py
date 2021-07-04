@@ -32,6 +32,8 @@ QYWX_APP = ''  # 企业微信应用的QYWX_APP; secrets可填 参考http://note.
 
 notify_mode = []
 
+SCKEY = os.getenv('PUSH_KEY') if os.getenv('PUSH_KEY') else ''
+
 # GitHub action运行需要填写对应的secrets
 if "BARK" in os.environ and os.environ["BARK"]:
     BARK = os.environ["BARK"]
