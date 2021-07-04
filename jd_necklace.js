@@ -83,7 +83,7 @@ class ZooFakerNecklace {
 
         if (script) {
             const [, scriptUrl, filename] = script;
-            const jsContent = await this.getJSContent(filename, scriptUrl);
+            const jsContent = await this.getJSContent('main.3b9712aa.js', scriptUrl);
             const fnMock = new Function;
             const ctx = {
                 window: { addEventListener: fnMock },
