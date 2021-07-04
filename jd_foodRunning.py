@@ -116,10 +116,9 @@ class FoodRunning:
 
 
 if __name__ == '__main__':
-    if root():
-        cookies = []
-        if os.environ.get("JD_COOKIE"):
-            cookies=os.environ.get("JD_COOKIE").split('&')
-        ck = cookies[0]
-        fr = FoodRunning(ck)
-        fr.run()
+    cookies = []
+    if os.environ.get("JD_COOKIE"):
+        cookies=os.environ.get("JD_COOKIE").split('&')
+    ck = cookies[0]
+    fr = FoodRunning(ck)
+    fr.run()
