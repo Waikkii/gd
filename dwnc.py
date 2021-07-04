@@ -76,7 +76,7 @@ class Dwnc:
         }
         url = f'https://cos.ucpopo.com/dwnc/settings/v{self.VERSION}.json?ts={int(time.time())}'
         res = requests.get(url, headers=headers)
-        if res.status_code is not 200:
+        if res.status_code != 200:
             raise Exception("配置文件获取失败，请检查版本号DWNC_VERSION是否正确")
         setting = res.json()
         self.thief_info = setting['thiefInfo']
