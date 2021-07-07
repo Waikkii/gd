@@ -5,7 +5,7 @@
 */
 
 const validator = require('./JDJRValidator_Pure.js');
-const Faker=require('./jd_sign_validate.js') 
+const Faker=require('./JD_sign_validate.js') 
 
 const $ = new Env('京东签到图形验证');
 const notify = $.isNode() ? require('./sendNotify') : '';
