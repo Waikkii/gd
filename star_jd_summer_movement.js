@@ -6,7 +6,7 @@
 const $ = new Env('燃动夏季');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-const helpAuthorFlag = true;//是否助力作者SH  true 助力，false 不助力
+const helpAuthorFlag = false;//是否助力作者SH  true 助力，false 不助力
 const https = require('https');
 const fs = require('fs/promises');
 const { R_OK } = require('fs').constants;
