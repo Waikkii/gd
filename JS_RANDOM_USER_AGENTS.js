@@ -176,7 +176,12 @@ function MD5 (string) {
     var temp = WordToHex(a)+WordToHex(b)+WordToHex(c)+WordToHex(d);
     return temp.toLowerCase();
 }
-const cookie = require("./jdCookie.js")[0];
+if (process.env.JD_COOKIE) {
+  cookie = process.env.JD_COOKIE.split('&')[0];
+} else {
+  cookie = 'cookiedoumeiyounilaiganshenme';
+}
+
 var iosVer_items = ["14.5", "14.4", "14.3", "14.2", "14.1", "14.0", "13.7", "13.3", "13.1"];
 var iosVer = iosVer_items[Math.floor(Math.random() * iosVer_items.length)];
 var network_items = ["5g", "4g", "3g", "wifi"];
