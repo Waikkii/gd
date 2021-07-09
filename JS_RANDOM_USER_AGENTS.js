@@ -181,13 +181,11 @@ if (process.env.JD_COOKIE) {
 } else {
   cookie = 'cookiedoumeiyounilaiganshenme';
 }
-
 var iosVer_items = ["14.5", "14.4", "14.3", "14.2", "14.1", "14.0", "13.7", "13.3", "13.1"];
 var iosVer = iosVer_items[Math.floor(Math.random() * iosVer_items.length)];
 var network_items = ["5g", "4g", "3g", "wifi"];
 var network = network_items[Math.floor(Math.random() * network_items.length)];
 const USER_AGENT = 'jdapp;iPhone;10.0.4;'+iosVer+';'+MD5(cookie)+Date.now().toString(36).substr(0,8)+';network/'+network+';Mozilla/5.0 (iPhone; CPU iPhone OS '+iosVer.replace('.','_')+' like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1';
-
 module.exports = {
   USER_AGENT
 }
