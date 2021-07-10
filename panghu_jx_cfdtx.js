@@ -1,8 +1,10 @@
 /*
-#财富岛体现时间修改  
+#财富岛提现时间修改  
 [task_local]
 1 59 23 * * *
 */
+
+
 const $ = new Env("京喜财富岛提现");
 const JD_API_HOST = "https://m.jingxi.com/";
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
@@ -34,9 +36,12 @@ $.userName = '';
           break;
         }
       }
-      // h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours()) + ':';
-      // m = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()) + ':';
       await cashOut();
+      var date_final = new Date((new Date()).getTime());
+      h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
+      m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
+      s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
+      console.log('当前时间：'+h_final+m_final+s_final);
       
     }
   }
