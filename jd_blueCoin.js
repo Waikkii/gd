@@ -97,6 +97,17 @@ const JD_API_HOST = `https://api.m.jd.com/api?appid=jdsupermarket`;
   .catch((e) => $.logErr(e))
   .finally(() => $.done())
 async function PrizeIndex() {
+  ///////////等待0点执行
+  let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+  while(true){
+    var date = new Date((new Date()).getTime());
+    s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
+    await wait(100)
+    if (s=='59'){
+      break;
+    }
+  }
+  ///////////
   await smtg_queryPrize();
   // await smtg_materialPrizeIndex();//兑换酒类奖品，此兑换API与之前的兑换京豆类的不一致，故目前无法进行
   // await Promise.all([
@@ -302,6 +313,8 @@ function smtg_obtainPrize(prizeId, timeout = 0, functionId = 'smt_exchangePrize'
     },
     "channel": "18"
   }
+
+
   return new Promise((resolve) => {
     setTimeout( ()=>{
       let url = {
@@ -317,6 +330,15 @@ function smtg_obtainPrize(prizeId, timeout = 0, functionId = 'smt_exchangePrize'
           'Accept-Language' : `zh-cn`
         }
       }
+
+      var date_final = new Date((new Date()).getTime());
+      h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
+      m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
+      s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
+      console.log('当前时间：'+h_final+m_final+s_final);
+
+
+
       $.post(url, async (err, resp, data) => {
         try {
           console.log(`兑换结果:${data}`);
