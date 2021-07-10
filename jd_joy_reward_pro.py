@@ -51,7 +51,7 @@ def main(i, cookie, validate):
         sys.stdout.write(f"{bean['id']} {bean['giftName']} {bean['leftStock']}\n")
         if bean['giftValue'] == target:
             while 1:
-                if datetime.datetime.now().second == 0:
+                if (datetime.datetime.now().second == 0) & (datetime.datetime.now().minute == 0):  
                     break
                 time.sleep(0.1)
             #sys.stdout.write('exchange()\n')
