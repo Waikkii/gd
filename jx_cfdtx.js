@@ -4,7 +4,6 @@
 1 59 23 * * *
 */
 
-
 const $ = new Env("京喜财富岛提现");
 const JD_API_HOST = "https://m.jingxi.com/";
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
