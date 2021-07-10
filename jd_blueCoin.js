@@ -26,7 +26,7 @@ let allMessage = '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let coinToBeans = $.getdata('coinToBeans') || 0; //兑换多少数量的京豆（20或者1000），0表示不兑换，默认不兑换京豆，如需兑换把0改成20或者1000，或者'商品名称'(商品名称放到单引号内)即可
-let jdNotify = false;//是否开启静默运行，默认false关闭(即:奖品兑换成功后会发出通知提示)
+let jdNotify = true;//是否开启静默运行，默认false关闭(即:奖品兑换成功后会发出通知提示)
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
 if ($.isNode()) {
@@ -99,11 +99,16 @@ const JD_API_HOST = `https://api.m.jd.com/api?appid=jdsupermarket`;
 async function PrizeIndex() {
   ///////////等待0点执行
   let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+  timeset = '00';
+  if (process.env.MARKET_COIN_TIME_SET) {
+    timeset = process.env.MARKET_COIN_TIME_SET;
+  }
   while(true){
     var date = new Date((new Date()).getTime());
     s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
+    h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours());
     await wait(100)
-    if (s=='59'){
+    if (h=='00'||s==timeset){
       break;
     }
   }
