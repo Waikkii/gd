@@ -8,11 +8,11 @@
 ============QuantumultX==============
 [task_local]
 #东东超市兑换奖品
-0 0 0 * * * jd_blueCoin.js, tag=东东超市兑换奖品, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxc.png, enabled=true
+1 59 23 * * * jd_blueCoin.js, tag=东东超市兑换奖品, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxc.png, enabled=true
 
 ====================Loon=================
 [Script]
-cron "0 0 0 * * *" script-path=jd_blueCoin.js,tag=东东超市兑换奖品
+cron "1 59 23 * * *" script-path=jd_blueCoin.js,tag=东东超市兑换奖品
 
 ===================Surge==================
 东东超市兑换奖品 = type=cron,cronexp="0 0 0 * * *",wake-system=1,timeout=3600,script-path=jd_blueCoin.js
