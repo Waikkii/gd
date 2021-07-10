@@ -1,7 +1,8 @@
 /**
- *  燃动夏季
- *  一次性脚本，尝试领取会员奖励
+ *  燃动夏季领会员奖励
+ *  每日跑一次，尝试领取会员奖励
  *  如果你已经是会员，则会领取奖励成功，若不是会员，则需要手动卡开
+ *  cron 10 8 * * *
  * */
 const $ = new Env('燃动夏季领会员奖励');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -14,7 +15,7 @@ const URL = 'https://wbbny.m.jd.com/babelDiy/Zeus/2rtpffK8wqNyPBH6wyUDuBKoAbCt/i
 const SYNTAX_MODULE = '!function(n){var r={};function o(e){if(r[e])';
 const REG_SCRIPT = /<script type="text\/javascript" src="([^><]+\/(app\.\w+\.js))\">/gm;
 const REG_ENTRY = /(__webpack_require__\(__webpack_require__.s=)(\d+)(?=\)})/;
-const needModuleId = 355
+const needModuleId = 356
 const DATA = {appid:'50085',sceneid:'OY217hPageh5'};
 let smashUtils;
 class MovementFaker {
