@@ -1,5 +1,8 @@
-
-
+/*
+#财富岛体现时间修改  
+[task_local]
+1 59 23 * * *
+*/
 const $ = new Env("京喜财富岛提现");
 const JD_API_HOST = "https://m.jingxi.com/";
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
@@ -22,8 +25,19 @@ $.userName = '';
     if ($.currentCookie) {
       $.userName =  decodeURIComponent($.currentCookie.match(/pt_pin=(.+?);/) && $.currentCookie.match(/pt_pin=(.+?);/)[1]);
       $.log(`\n开始【京东账号${i + 1}】${$.userName}`);
-      
+      let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+      while(true){
+        var date = new Date((new Date()).getTime());
+        s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
+        await wait(100)
+        if (s=='00'){
+          break;
+        }
+      }
+      // h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours()) + ':';
+      // m = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()) + ':';
       await cashOut();
+      
     }
   }
   await showMsg();
