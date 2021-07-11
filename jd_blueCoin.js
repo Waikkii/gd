@@ -97,22 +97,6 @@ const JD_API_HOST = `https://api.m.jd.com/api?appid=jdsupermarket`;
   .catch((e) => $.logErr(e))
   .finally(() => $.done())
 async function PrizeIndex() {
-  ///////////等待0点执行
-  let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-  timeset = '00';
-  if (process.env.MARKET_COIN_TIME_SET) {
-    timeset = process.env.MARKET_COIN_TIME_SET;
-  }
-  while(true){
-    var date = new Date((new Date()).getTime());
-    s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
-    h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours());
-    await wait(100)
-    if (h=='00'||s==timeset){
-      break;
-    }
-  }
-  ///////////
   await smtg_queryPrize();
   // await smtg_materialPrizeIndex();//兑换酒类奖品，此兑换API与之前的兑换京豆类的不一致，故目前无法进行
   // await Promise.all([
@@ -141,11 +125,40 @@ async function PrizeIndex() {
         return ;
       }
       //兑换1000京豆
-      if ($.totalBlue > $.blueCost) {
-        await smtg_obtainPrize(prizeList[0].prizeId);
-      } else {
+      if ($.totalBlue < $.blueCost) {
         console.log(`兑换失败,您目前蓝币${$.totalBlue}个,不足以兑换${$.title}所需的${$.blueCost}个`);
         $.beanerr = `兑换失败,您目前蓝币${$.totalBlue}个,不足以兑换${$.title}所需的${$.blueCost}个`;
+        return ;
+      } else {
+          ///////////等待0点执行
+          console.log('进入静默等待模式...');
+          let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+          timeset = '00';
+          if (process.env.MARKET_COIN_TIME_SET) {
+            timeset = process.env.MARKET_COIN_TIME_SET;
+            console.log('当前设置自定义等待秒数为：'+timeset);
+          } else {
+            console.log('未查询到变量，设定默认等待秒数为：'+timeset);
+          }
+          
+          while(true){
+            var date = new Date((new Date()).getTime());
+            s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
+            m = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes());
+            h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours());
+            await wait(100)
+            if (h=='00'||s==timeset){
+              break;
+            }
+          }
+          ///////////
+        await smtg_obtainPrize(prizeList[0].prizeId);
+      
+        var date_final = new Date((new Date()).getTime());
+        h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
+        m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
+        s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
+        console.log('当前时间：'+h_final+m_final+s_final);
       }
     } else if (`${coinToBeans}` === '20') {
       if (prizeList[1] && prizeList[1].type === 3) {
@@ -197,15 +210,42 @@ async function PrizeIndex() {
           $.beanerr = `${prizeList[0].subTitle}`;
           return ;
         }
-        if ($.totalBlue > $.blueCost) {
+        if ($.totalBlue < $.blueCost) {
+          console.log(`兑换失败,您目前蓝币${$.totalBlue}个,不足以兑换${$.title}所需的${$.blueCost}个`);
+          $.beanerr = `兑换失败,您目前蓝币${$.totalBlue}个,不足以兑换${$.title}所需的${$.blueCost}个`;
+          return ;
+        } else {
+          ///////////等待0点执行
+          console.log('进入静默等待模式...');
+          let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+          timeset = '00';
+          if (process.env.MARKET_COIN_TIME_SET) {
+            timeset = process.env.MARKET_COIN_TIME_SET;
+            console.log('当前设置自定义等待秒数为：'+timeset);
+          } else {
+            console.log('未查询到变量，设定默认等待秒数为：'+timeset);
+          }
+          while(true){
+            var date = new Date((new Date()).getTime());
+            s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
+            m = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes());
+            h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours());
+            await wait(100)
+            if (h=='00'||s==timeset){
+              break;
+            }
+          }
+          ///////////
           if ($.type === 4 && !$.beanType) {
             await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
           } else {
             await smtg_obtainPrize(prizeId);
           }
-        } else {
-          console.log(`兑换失败,您目前蓝币${$.totalBlue}个,不足以兑换${$.title}所需的${$.blueCost}个`);
-          $.beanerr = `兑换失败,您目前蓝币${$.totalBlue}个,不足以兑换${$.title}所需的${$.blueCost}个`;
+          var date_final = new Date((new Date()).getTime());
+          h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
+          m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
+          s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
+          console.log('当前时间：'+h_final+m_final+s_final);
         }
       } else {
         console.log(`奖品兑换列表【${coinToBeans}】已下架，请检查活动页面是否存在此商品，如存在请检查您的输入是否正确`);
@@ -335,14 +375,6 @@ function smtg_obtainPrize(prizeId, timeout = 0, functionId = 'smt_exchangePrize'
           'Accept-Language' : `zh-cn`
         }
       }
-
-      var date_final = new Date((new Date()).getTime());
-      h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
-      m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
-      s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
-      console.log('当前时间：'+h_final+m_final+s_final);
-
-
 
       $.post(url, async (err, resp, data) => {
         try {
