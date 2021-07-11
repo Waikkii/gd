@@ -68,11 +68,31 @@ $.shareuuid = []
                 await getUserInfo()
                 await getUid()
                 if ($.cando) {
+                    ///////////等待0点执行
+                    console.log('进入静默等待模式...');
+                    let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+                    timeset = '59';
+                    while(true){
+                        var date = new Date((new Date()).getTime());
+                        s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
+                        m = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes());
+                        h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours());
+                        await wait(100)
+                        if (h=='10'||s==timeset){
+                        break;
+                        }
+                    }
+                    ///////////
                     await exchange(cupExid) //兑换
                     await exchange(cupExid) //兑换
                     await exchange(cupExid) //兑换
                     await exchange(cupExid) //兑换
                     await exchange(cupExid) //兑换
+                    var date_final = new Date((new Date()).getTime());
+                    h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
+                    m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
+                    s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
+                    console.log('当前时间：'+h_final+m_final+s_final);
                     await getinfo()
                     taskList = $.taskList
                     for (j = 0; j < taskList.length; j++) {
