@@ -245,7 +245,60 @@ async function PrizeIndex() {
           h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
           m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
           s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
-          console.log('当前时间：'+h_final+m_final+s_final);
+          console.log('try1 当前时间：'+h_final+m_final+s_final);
+          wait(1000)
+          ///////////
+          ///////////
+          if ($.type === 4 && !$.beanType) {
+            await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
+          } else {
+            await smtg_obtainPrize(prizeId);
+          }
+          var date_final = new Date((new Date()).getTime());
+          h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
+          m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
+          s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
+          console.log('try1 当前时间：'+h_final+m_final+s_final);
+          wait(1000)
+          ///////////
+          ///////////
+          if ($.type === 4 && !$.beanType) {
+            await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
+          } else {
+            await smtg_obtainPrize(prizeId);
+          }
+          var date_final = new Date((new Date()).getTime());
+          h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
+          m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
+          s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
+          console.log('try2 当前时间：'+h_final+m_final+s_final);
+          wait(1000)
+          ///////////
+          if ($.type === 4 && !$.beanType) {
+            await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
+          } else {
+            await smtg_obtainPrize(prizeId);
+          }
+          var date_final = new Date((new Date()).getTime());
+          h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
+          m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
+          s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
+          console.log('try3 当前时间：'+h_final+m_final+s_final);
+          wait(1000)
+          ///////////
+          ///////////
+          if ($.type === 4 && !$.beanType) {
+            await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
+          } else {
+            await smtg_obtainPrize(prizeId);
+          }
+          var date_final = new Date((new Date()).getTime());
+          h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
+          m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
+          s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
+          console.log('try4 当前时间：'+h_final+m_final+s_final);
+          wait(1000)
+          ///////////
         }
       } else {
         console.log(`奖品兑换列表【${coinToBeans}】已下架，请检查活动页面是否存在此商品，如存在请检查您的输入是否正确`);
@@ -418,9 +471,10 @@ function smtg_obtainPrize(prizeId, timeout = 0, functionId = 'smt_exchangePrize'
     },timeout)
   })
 }
+//smtg_home,queryShopTask,smtg_newHome
 function smtgHome() {
   return new Promise((resolve) => {
-    $.get(taskUrl('smtg_home'), (err, resp, data) => {
+    $.get(taskUrl('smtg_newHome'), (err, resp, data) => {
       try {
         if (err) {
           console.log('\n东东超市兑换奖品: API查询请求失败 ‼️‼️')
