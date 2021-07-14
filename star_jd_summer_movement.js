@@ -20,7 +20,7 @@ const needModuleId = 356
 const DATA = {appid:'50085',sceneid:'OY217hPageh5'};
 let smashUtils;
 class MovementFaker {
-  constructor(cookie) {this.cookie = cookie;this.ua = require('./USER_AGENTS.js').USER_AGENT;}
+  constructor(cookie) {this.cookie = cookie;this.ua = require('./JS_RANDOM_USER_AGENTS.js').USER_AGENT;}
   async run() {if (!smashUtils) {await this.init();}
     var t = Math.floor(1e7 + 9e7 * Math.random()).toString();
     var e = smashUtils.get_risk_result({id: t,data: {random: t}}).log;
