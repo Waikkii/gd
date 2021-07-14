@@ -1,67 +1,16 @@
 /**
  *  燃动夏季下注
  *  注意：每个奖品会花费200币下注，不想下注的人不要跑这个脚本
- *  每日20点开奖，脚本会自动开奖，但暂时未加入中奖推送，因为作者没中过，不知道中奖的状态是什么
+ *  若想下满注则设置环境变量 MAX_BET=true 前提：需要账号已经开通店铺会员
+ *  每日20点开奖，脚本会自动开奖，
  *  cron  11 12,20 * * *
  * */
 const $ = new Env('燃动夏季下注');
+//环境变量是否下满注，false否，true是，（满注20次，前提：需要已经开过会员卡，若未开同会员，则只能下3注）
+const maxBet =  $.isNode() ? (process.env.MAX_BET ? process.env.MAX_BET : false):false;
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-const https = require('https');
-const fs = require('fs/promises');
-const { R_OK } = require('fs').constants;
-const vm = require('vm');
-const URL = 'https://wbbny.m.jd.com/babelDiy/Zeus/2rtpffK8wqNyPBH6wyUDuBKoAbCt/index.html';
-const SYNTAX_MODULE = '!function(n){var r={};function o(e){if(r[e])';
-const REG_SCRIPT = /<script type="text\/javascript" src="([^><]+\/(app\.\w+\.js))\">/gm;
-const REG_ENTRY = /(__webpack_require__\(__webpack_require__.s=)(\d+)(?=\)})/;
-const needModuleId = 356
-const DATA = {appid:'50085',sceneid:'OY217hPageh5'};
-let smashUtils;
-class MovementFaker {
-  constructor(cookie) {this.cookie = cookie;this.ua = require('./USER_AGENTS.js').USER_AGENT;}
-  async run() {if (!smashUtils) {await this.init();}
-    var t = Math.floor(1e7 + 9e7 * Math.random()).toString();
-    var e = smashUtils.get_risk_result({id: t,data: {random: t}}).log;
-    var o = JSON.stringify({extraData: {log:  e || -1,sceneid: DATA.sceneid,},random: t});
-    return o;
-  }
-  async init() {
-    try {
-      console.time('MovementFaker');process.chdir(__dirname);const html = await MovementFaker.httpGet(URL);const script = REG_SCRIPT.exec(html);
-      if (script) {const [, scriptUrl, filename] = script;const jsContent = await this.getJSContent(filename, scriptUrl);const fnMock = new Function;const ctx = {window: { addEventListener: fnMock },document: {addEventListener: fnMock,removeEventListener: fnMock,cookie: this.cookie,},navigator: { userAgent: this.ua },};vm.createContext(ctx);vm.runInContext(jsContent, ctx);smashUtils = ctx.window.smashUtils;smashUtils.init(DATA);
-      }
-      console.timeEnd('MovementFaker');
-    } catch (e) {
-      console.log(e)
-    }
-  }
-  async getJSContent(cacheKey, url) {
-    try {await fs.access(cacheKey, R_OK);const rawFile = await fs.readFile(cacheKey, { encoding: 'utf8' });return rawFile;
-    } catch (e) {
-      let jsContent = await MovementFaker.httpGet(url);
-      const moduleIndex = jsContent.indexOf(SYNTAX_MODULE, 1);
-      const findEntry = REG_ENTRY.test(jsContent);
-      if (!(moduleIndex && findEntry)) {
-        throw new Error('Module not found.');
-      }
-      jsContent = jsContent.replace(REG_ENTRY, `$1${needModuleId}`);
-      fs.writeFile(cacheKey, jsContent);
-      return jsContent;
-      REG_ENTRY.lastIndex = 0;
-      const entry = REG_ENTRY.exec(jsContent);
-    }
-  }
-  static httpGet(url) {
-    return new Promise((resolve, reject) => {
-      const protocol = url.indexOf('http') !== 0 ? 'https:' : '';
-      const req = https.get(protocol + url, (res) => {res.setEncoding('utf-8');let rawData = '';res.on('error', reject);res.on('data', chunk => rawData += chunk);res.on('end', () => resolve(rawData));});
-      req.on('error', reject);
-      req.end();
-    });
-  }
-}
-
+const UA =  `jdpingou;iPhone;10.0.6;${Math.ceil(Math.random()*2+12)}.${Math.ceil(Math.random()*4)};${randomString(40)};`;
 $.inviteList = [];
 let uuid = 8888;
 let cookiesArr = [];
@@ -76,12 +25,14 @@ if ($.isNode()) {
     $.getdata("CookieJD2"),
     ...$.toObj($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
+
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
   console.log(`注意：每个奖品会花费200币下注，不想下注的人不要跑这个脚本`);
+  console.log(`脚本默认下7注，若需要花费金币下满20注，则修改环境变量“MAX_BET”为true`);
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.cookie = cookiesArr[i];
@@ -117,66 +68,32 @@ async function main(){
   $.userInfo =$.homeData.result.userActBaseInfo
   console.log(`\n待兑换金额：${Number($.userInfo.poolMoney)} 当前等级:${$.userInfo.medalLevel} \n`);
   await $.wait(1000);
-  if (Number($.userInfo.poolCurrency) >= Number($.userInfo.exchangeThreshold)) {
-    console.log(`满足升级条件，去升级`);
-    await $.wait(1000);
-    await takePostRequest('olympicgames_receiveCash');
-  }
-  if($.homeData.result.trainingInfo.state === 0 && !$.homeData.result.trainingInfo.finishFlag){
-    console.log(`开始运动`)
-    await takePostRequest('olympicgames_startTraining');
-  }else if($.homeData.result.trainingInfo.state === 0 && $.homeData.result.trainingInfo.finishFlag){
-    console.log(`已完成今日运动`)
-  }
   bubbleInfos = $.homeData.result.bubbleInfos;
-  let runFlag = false;
-  for(let item of bubbleInfos){
-    if(item.type != 7){
-      $.collectId = item.type
-      await takePostRequest('olympicgames_collectCurrency');
-      await $.wait(1000);
-      runFlag = true;
-    }
-  }
-  let runBet = false;
-  let maxRun = 0;
   $.continueRun = true;
   $.betGoodsList = $.homeData.result.pawnshopInfo.betGoodsList;
-  do {
-    runBet = false;
-    for (let i = 0; i < $.betGoodsList.length; i++) {
-      $.oneGoodsInfo = $.betGoodsList[i];
-      $.betInfo = {};
-      if($.oneGoodsInfo.status === 0){
-        await takePostRequest('olympicgames_pawnshopBetPop');
-        if($.oneGoodsInfo.score < 7){
-          console.log(`\n奖品：${$.oneGoodsInfo.skuName}，${$.betInfo.betText},去下注`);
-          await takePostRequest('olympicgames_pawnshopBet');
-          await $.wait(2000);
-          runBet = true;
-        }else{
-          console.log(`\n奖品：${$.oneGoodsInfo.skuName},已下${$.oneGoodsInfo.score}注`);
-        }
-      }else if($.oneGoodsInfo.status === 1){
-        console.log(`\n奖品：${$.oneGoodsInfo.skuName}，去开奖`);
-        await takePostRequest('olympicgames_pawnshopRewardPop');
-        await $.wait(2000);
-      }else if($.oneGoodsInfo.status === 3){
-        console.log(`\n奖品：${$.oneGoodsInfo.skuName}，已开奖`);
-      }
+  for (let i = 0; i < $.betGoodsList.length; i++) {
+    $.oneGoodsInfo = $.betGoodsList[i];
+    $.continueRun = true;
+    if($.oneGoodsInfo.status === 1){
+      console.log(`\n奖品：${$.oneGoodsInfo.skuName}，去开奖`);
+      await takePostRequest('olympicgames_pawnshopRewardPop');
+      await $.wait(2000);
+      continue;
+    }else if($.oneGoodsInfo.status === 3){
+      console.log(`\n奖品：${$.oneGoodsInfo.skuName}，已开奖`);
+      continue;
     }
-    if(runBet){
-      await takePostRequest('olympicgames_home');
-      $.betGoodsList = $.homeData.result.pawnshopInfo.betGoodsList;
+    while (($.oneGoodsInfo.score < 7 || (maxBet && $.oneGoodsInfo.score < 20)) && $.continueRun){
+      await takePostRequest('olympicgames_pawnshopBetPop');
+      await $.wait(1000);
+      console.log(`\n奖品：${$.oneGoodsInfo.skuName}，${$.betInfo.betText},去下注`);
+      await takePostRequest('olympicgames_pawnshopBet');
+      await $.wait(2000);
     }
-    maxRun ++;
-  }while (runBet && $.continueRun && maxRun<4)
+  }
   await $.wait(2000);
   await takePostRequest('olympicgames_pawnshopBetRecord');
 }
-
-async function getBody($) {const zf = new MovementFaker($.cookie);const ss = await zf.run();return ss;}
-
 
 async function takePostRequest(type) {
   let body = ``;
@@ -186,22 +103,6 @@ async function takePostRequest(type) {
       body = `functionId=olympicgames_home&body={}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`;
       myRequest = await getPostRequest(body);
       break;
-    case 'olympicgames_receiveCash':
-      body = `functionId=olympicgames_receiveCash&body={"type":6}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`;
-      myRequest = await getPostRequest(body);
-      break
-    case 'olympicgames_collectCurrency':
-      body = await getPostBody(type);
-      myRequest = await getPostRequest(body);
-      break
-    case 'olympicgames_startTraining':
-      body = await getPostBody(type);
-      myRequest = await getPostRequest( body);
-      break;
-    case 'olypicgames_guradHome':
-      body = `functionId=olypicgames_guradHome&body={}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`;
-      myRequest = await getPostRequest( body);
-      break
     case 'olympicgames_pawnshopBet':
       body = `functionId=olympicgames_pawnshopBet&body={"skuId":${$.oneGoodsInfo.skuId}}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`;
       myRequest = await getPostRequest( body);
@@ -221,7 +122,6 @@ async function takePostRequest(type) {
     default:
       console.log(`错误${type}`);
   }
-
   myRequest['url'] = `https://api.m.jd.com/client.action?advId=${type}`;
   return new Promise(async resolve => {
     $.post(myRequest, (err, resp, data) => {
@@ -252,44 +152,10 @@ async function dealReturn(type, data) {
         }
       }
       break;
-    case 'olympicgames_receiveCash':
-      if (data.code === 0 && data.data && data.data.result) {
-        console.log('升级成功')
-        // if(data.data.result.couponVO){
-        //   let res = data.data.result.couponVO
-        //   console.log(`获得[${res.couponName}]优惠券：${res.usageThreshold} 优惠：${res.quota} 时间：${res.useTimeRange}`);
-        // }
-      }else{
-        //console.log(JSON.stringify(data));
-      }
-      console.log(JSON.stringify(data));
-      break;
-    case 'olympicgames_collectCurrency':
-      if (data.code === 0 && data.data && data.data.result) {
-        console.log(`收取成功，获得：${data.data.result.poolCurrency}`);
-      }else{
-        console.log(JSON.stringify(data));
-      }
-      break;
-    case 'olympicgames_startTraining':
-      if (data.code === 0 && data.data && data.data.result) {
-        console.log(`执行运动成功`);
-      }else{
-        console.log(JSON.stringify(data));
-      }
-      break;
-    case 'olypicgames_guradHome':
-      //console.log(JSON.stringify(data));
-      if (data.data && data.data.result && data.data.bizCode === 0) {
-        console.log(`百元守卫战互助码：${ data.data.result.inviteId || '助力已满，获取助力码失败'}`);
-        $.guradHome = data.data;
-      }else {
-        console.log(JSON.stringify(data));
-      }
-      break;
     case 'olympicgames_pawnshopBet':
       if (data.code === 0 && data.data && data.data.result) {
         console.log(`下注成功，已下注${data.data.result.score}次`);
+        $.oneGoodsInfo.score = data.data.result.score;
       }else{
         $.continueRun = false;
         console.log(JSON.stringify(data));
@@ -305,6 +171,15 @@ async function dealReturn(type, data) {
     case 'olympicgames_pawnshopRewardPop':
       console.log(`开奖结果`);
       console.log(JSON.stringify(data));
+      if(data.code === 0 && data.data && data.data.result){
+        if(data.data.result.status === 2){
+          console.log('恭喜你，应该是中奖了；');
+          let message = `第【${$.index}】个账号，${$.UserName},可能抽中了【${data.data.result.skuName}】,请登录APP查看`
+          await notify.sendNotify(`燃动夏季下注`, message);
+        }else{
+          console.log('未中奖');
+        }
+      }
       break;
     case 'olympicgames_pawnshopBetRecord':
       if (data.code === 0 && data.data && data.data.result && data.data.result[0]) {
@@ -328,6 +203,13 @@ async function dealReturn(type, data) {
       console.log(`未判断的异常${type}`);
   }
 }
+function randomString(e) {
+  e = e || 32;
+  let t = "abcdefhijkmnprstwxyz2345678", a = t.length, n = "";
+  for (i = 0; i < e; i++)
+    n += t.charAt(Math.floor(Math.random() * a));
+  return n
+}
 async function getPostRequest(body) {
   const method = `POST`;
   const headers = {
@@ -339,35 +221,11 @@ async function getPostRequest(body) {
     'Cookie': $.cookie,
     "Origin": "https://wbbny.m.jd.com",
     "Referer": "https://wbbny.m.jd.com/",
-    'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+    'User-Agent': UA//$.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
   };
   return { method: method, headers: headers, body: body};
 }
 
-async function getPostBody(type) {
-  return new Promise(async resolve => {
-    let taskBody = '';
-    try {
-      const log = await getBody($);
-      if (type === 'help' || type === 'byHelp') {
-        taskBody = `functionId=olympicgames_assist&body=${JSON.stringify({"inviteId":$.inviteId,"type": "confirm","ss" :log})}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`
-      } else if (type === 'olympicgames_collectCurrency') {
-        taskBody = `functionId=olympicgames_collectCurrency&body=${JSON.stringify({"type":$.collectId,"ss" : log})}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`;
-      } else if(type === 'add_car'){
-        taskBody = `functionId=olympicgames_doTaskDetail&body=${JSON.stringify({"taskId": $.taskId,"taskToken":$.taskToken,"ss" : log})}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`
-      }else if(type === 'olympicgames_startTraining'){
-        taskBody = `functionId=olympicgames_startTraining&body=${JSON.stringify({"ss" : log})}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`
-      }else{
-        taskBody = `functionId=${type}&body=${JSON.stringify({"taskId": $.oneTask.taskId,"actionType":1,"taskToken" : $.oneActivityInfo.taskToken,"ss" : log})}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`
-      }
-      //console.log(taskBody)
-    } catch (e) {
-      $.logErr(e)
-    } finally {
-      resolve(taskBody);
-    }
-  })
-}
 function getUUID() {
   var n = (new Date).getTime();
   let uuid="xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
