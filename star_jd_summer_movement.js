@@ -556,13 +556,13 @@ async function getPostRequest(body) {
   const method = `POST`;
   const headers = {
     "Accept": "application/json",
-    "Accept-Encoding": "gzip, deflgetPostRequestate, br",
-    "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Language": "zh-CN",
     "Connection": "keep-alive",
     "Content-Type": "application/x-www-form-urlencoded",
     'Cookie': $.cookie,
     "Origin": "https://wbbny.m.jd.com",
-    "Referer": "https://wbbny.m.jd.com/",
+    "Referer": "https://wbbny.m.jd.com/babelDiy/Zeus",
     'User-Agent': UA,
     //'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
   };
