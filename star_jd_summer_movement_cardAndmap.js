@@ -4,7 +4,7 @@
  *  蚊子腿金币
  *  cron 7 12,13 * * *
  * */
-const $ = new Env('燃动夏季');
+const $ = new Env('燃动夏季店铺+会员');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 $.inviteList = [];
