@@ -21,7 +21,7 @@ cron "10 0,20 * * *" script-path=jd_necklace.js,tag=点点券
 const $ = new Env('点点券');
 let allMessage = ``;
 const notify = $.isNode() ? require('./sendNotify') : '';
-const zooFaker = require('./utils/ZooFaker_Necklace').utils;
+const zooFaker = require('./ZooFaker_Necklace').utils;
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const openUrl = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html%22%20%7D`
