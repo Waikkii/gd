@@ -25,7 +25,7 @@ var mode = $.isNode() ? (process.env.angryBeanMode ? process.env.angryBeanMode :
      }
      console.log(`开启${mode}模式`)
      requireConfig()
-     ///////////等待0点执行
+     ///////////等待0点执行/
      console.log('进入静默等待模式...');
      let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
      timeset = '00';
