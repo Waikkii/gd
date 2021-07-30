@@ -17,6 +17,19 @@ var tools= []
         console.log("请在环境变量中填写需要助力的账号")
     }
     requireConfig()
+    ///////////等待0点执行
+    console.log('进入静默等待模式...');
+    let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+    timeset = '00';
+    while(true){
+        var date = new Date((new Date()).getTime());
+        s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
+        await wait(100)
+        if (s==timeset){
+            break;
+        }
+    }
+    ///////////
     for (let i in cookiesArr) {
         cookie = cookiesArr[i]
         if(kois.indexOf(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])!=-1){
