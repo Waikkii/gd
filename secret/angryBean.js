@@ -25,6 +25,19 @@ var mode = $.isNode() ? (process.env.angryBeanMode ? process.env.angryBeanMode :
      }
      console.log(`开启${mode}模式`)
      requireConfig()
+     ///////////等待0点执行
+     console.log('进入静默等待模式...');
+     let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+     timeset = '00';
+     while(true){
+       var date = new Date((new Date()).getTime());
+       s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
+       await wait(100)
+       if (s==timeset){
+         break;
+       }
+     }
+     ///////////
      for (let i in cookiesArr) {
           i = +i
           cookie = cookiesArr[i]
