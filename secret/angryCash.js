@@ -17,6 +17,19 @@ var tools = [];
     if(!pins){
         console.log("未设置环境变量cashHelpPins，默认助力前9个账号")
     }
+    ///////////等待0点执行
+    console.log('进入静默等待模式...');
+    let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+    timeset = '00';
+    while(true){
+        var date = new Date((new Date()).getTime());
+        s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
+        await wait(100)
+        if (s==timeset){
+            break;
+        }
+    }
+    ///////////
     for (let i = 0; i < len; i++) {
         cookie = cookiesArr[i];
         pin = cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]
