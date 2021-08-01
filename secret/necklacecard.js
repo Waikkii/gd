@@ -4,7 +4,7 @@
 */
 const $ = new Env('集胜券点亮金牌');
 const notify = $.isNode() ? require('./sendNotify') : '';
-const jdCookieNode = $.isNode() ? require('./jdbackypCOOKIE.js') : '';
+const jdCookieNode = $.isNode() ? require('./jdbackupCOOKIE.js') : '';
 const activityKey = 'ebac35856fbbb121653a4006cbb681c9';
 $.inviteList = [];
 let cookiesArr = [];
