@@ -1,7 +1,7 @@
 /*
 
 [task_local]
-#7月粉丝互动
+#8月粉丝互动
 1 8 * * * https://raw.githubusercontent.com/Wenmoux/scripts/wen/jd/jd_wxFans.js, tag=粉丝互动, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 */
 const $ = new Env('粉丝互动');
@@ -26,8 +26,8 @@ if ($.isNode()) {
 
 const JD_API_HOST = `https://api.m.jd.com/client.action`;
 message = ""
-$.shareuuid = "8cec00a4917e4af6ae49f8f4f9e7b58d"
-$.actid = "aae88e19901340a28b604f5cf5b61dd6"
+$.shareuuid = "3307706"
+$.actid = "162c43699ba945e8adb83b2bd5fe0142"
 !(async () => {
         if (!cookiesArr[0]) {
             $.msg($.name, '【提示】请先获取cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', {
