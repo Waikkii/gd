@@ -36,6 +36,7 @@ $.actid = "162c43699ba945e8adb83b2bd5fe0142"
             return;
         }
         for (let i = 0; i < cookiesArr.length; i++) {
+            await $.wait(5000);
             cookie = cookiesArr[i];
             if (cookie) {
                 $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
