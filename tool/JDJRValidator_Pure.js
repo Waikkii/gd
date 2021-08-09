@@ -529,4 +529,7 @@ function injectToRequest(fn,scene = 'cww', ua = '') {
   };
 }
 
-exports.injectToRequest = injectToRequest;
+module.exports = {
+  sleep,
+  injectToRequest
+}
