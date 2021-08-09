@@ -25,12 +25,12 @@
 
 * [@NobyDa](https://github.com/NobyDa)
 
-* [@chavyleung](https://github.com/chavyleung)
+* [@Wenmoux](https://github.com/Wenmoux)
 
-* [@liuxiaoyucc](https://github.com/liuxiaoyucc)
+* [@star261](https://github.com/star261)
 
-* [@Zero-S1](https://github.com/Zero-S1)
+* [@smiek2221](https://github.com/smiek2221)
 
-* [@uniqueque](https://github.com/uniqueque)
+* [@cdle](https://github.com/cdle)
 
-* [@nzw9314](https://github.com/nzw9314)
+* [@Aaron-lv](https://github.com/Aaron-lv)
