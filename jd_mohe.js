@@ -152,18 +152,18 @@ async function task1() {
 }
 function addShare(shareId) {
   return new Promise((resolve) => {
-    const url = `addShare?shareId=${shareId}&t=${Date.now()}`;
-    $.get(taskurl(url), (err, resp, data) => {
+    const body = {"shareId":shareId,"apiMapping":"/active/addShare"}
+    $.get(taskurl(body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          console.log(`助力结果${data}`)
           data = JSON.parse(data);
           if (data['code'] === 200) {
-            // console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）助力好友 【${data['data']}】 成功\n`);
-            console.log(`\n助力好友 【${data['data']}】 成功\n`);
+            console.log(`助力好友【${data.data}】成功\n`);
+          } else {
+            console.log(`助力失败：${data.msg}`);
           }
         }
       } catch (e) {
