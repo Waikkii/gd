@@ -1,4 +1,5 @@
 /**
+ *  只给我助力（不是star），介意勿用
  *  活动路径  手机馆---》IQOO大牌日---〉左下角金机馆
  *  33 4,7 8-20 8 *
  *  第一个账号参加作者内置的团，其他账号参加第一个账号的团
@@ -24,6 +25,7 @@ let res = [];
     if (!cookiesArr[0]) {
         $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
         return;
+    }
     $.authorCode = '6110ecba147a938905';
     for (let i = 0; i < cookiesArr.length; i++) {
         await getUA();
