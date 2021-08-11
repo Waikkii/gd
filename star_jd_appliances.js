@@ -3,7 +3,7 @@
  *   cron   54 5 9-15 8 *
  *   不要问我是哪个活动，问了我也不告诉你,我也找不到入口了
  */
-const $ = new Env('金机奖');
+const $ = new Env('家电');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
