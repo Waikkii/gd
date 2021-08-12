@@ -1,5 +1,7 @@
 ![Anurag’s github stats](https://github-readme-stats.vercel.app/api?username=Waikkii&show_icons=true&icon_color=CE1D2D&text_color=718096&bg_color=ffffff&hide_title=true)
 
+# 适配一对一QQ推送 ![progress](https://progress-bar.dev/1/"progress")
+
 ## Special statement:
 
 * Any unlocking and decryption analysis scripts involved in the Script project released by this warehouse are only used for testing, learning and research, and are forbidden to be used for commercial purposes. Their legality, accuracy, completeness and effectiveness cannot be guaranteed. Please make your own judgment based on the situation. .
