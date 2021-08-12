@@ -22,6 +22,7 @@ cron "2 9 * * *" script-path=jd_bean_change.js, tag=京东资产变动通知
  */
 const $ = new Env('京东资产变动通知');
 const notify = $.isNode() ? require('./sendNotify') : '';
+const notifyo2o = $.isNode() ? require('./sendNotifyo2o') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let allMessage = '';
@@ -62,11 +63,18 @@ if ($.isNode()) {
 
         if ($.isNode()) {
           await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+          if (process.env.O2O_GOCQ_URL) {
+            await notifyo2o.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, cookie, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+          }
         }
         continue
       }
       await bean();
       await showMsg();
+      if (process.env.O2O_GOCQ_URL) {
+        await showoneMsg();
+        await notifyo2o.sendNotify(`${$.name}`, cookie, `${oneMessage}`);
+      }
     }
   }
 
@@ -87,6 +95,10 @@ async function showMsg() {
   //   await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `账号${$.index}：${$.nickName || $.UserName}\n昨日收入：${$.incomeBean}京豆 🐶\n昨日支出：${$.expenseBean}京豆 🐶\n当前京豆：${$.beanCount}京豆 🐶${$.message}`, { url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean` })
   // }
   $.msg($.name, '', `账号${$.index}：${$.nickName || $.UserName}\n今日收入：${$.todayIncomeBean}京豆 🐶\n昨日收入：${$.incomeBean}京豆 🐶\n昨日支出：${$.expenseBean}京豆 🐶\n当前京豆：${$.beanCount}(今日将过期${$.expirejingdou})京豆🐶${$.message}`, {"open-url": "https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean"});
+}
+async function showoneMsg() {
+  if ($.errorMsg) return
+  oneMessage = `账号${$.index}：${$.nickName || $.UserName}\n今日收入：${$.todayIncomeBean}京豆 🐶\n昨日收入：${$.incomeBean}京豆 🐶\n昨日支出：${$.expenseBean}京豆 🐶\n当前京豆：${$.beanCount}(今日将过期${$.expirejingdou})京豆 🐶${$.message}`;
 }
 async function bean() {
   // console.log(`北京时间零点时间戳:${parseInt((Date.now() + 28800000) / 86400000) * 86400000 - 28800000}`);
