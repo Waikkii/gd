@@ -1,6 +1,6 @@
 /*
  * @Author: Waikkii https://github.com/Waikkii
- * @Date: 2021-08-12 16:40:29
+ * @Date: 2021-08-13 00:00:01
  * sendNotify QQ一对一推送通知功能
  * @param text 通知头
  * @param cookie 检索ck
@@ -80,19 +80,27 @@ async function sendNotify(
   }
   //查询qq群所有用户
   user_list = await get_group_member_list(O2O_GOCQ_URL, O2O_GOCQ_GROUP_ID, "")
-  //console.log(user_list)
+  //查询所有好友
+  friend_list = await get_friend_list(O2O_GOCQ_URL, "")
   //判断qq是否在群里
-  send_glag = 0;
+  send_flag = 0;
   for(var i=0;i<user_list.data.length;i++){
     if(user_list.data[i].user_id==user_qq && user_qq!=''){
-        send_glag = 1;
+        send_flag = 1;
+        break;
+    }
+  }
+  //判断qq是否是好友
+  for(var i=0;i<friend_list.data.length;i++){
+    if(friend_list.data[i].user_id==user_qq && user_qq!=''){
+        send_flag = 2;
         break;
     }
   }
   //如果在群里就发消息
-  if (send_glag==1){
+  if (send_flag!=0){
     await Promise.all([
-        o2ogocqNotify(text, user_qq, desp, ""),//go-cqhttp
+        o2ogocqNotify(text, user_qq, send_flag, desp, ""),//go-cqhttp
     ]);
   }
 }
@@ -118,14 +126,38 @@ function get_group_member_list(url, group_id, data) {
     })
 }
 
-function o2ogocqNotify(text, qq, desp, data) {
+function get_friend_list(url, data) {
+    let body = {
+        url: `${url}/get_friend_list`,
+    }
+    return new Promise(resolve => {
+        $.get(body, async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`GO-CQHTTP get_friend_list API请求失败，请检查网路重试`)
+                } else {
+                    data = JSON.parse(data);
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve(data);
+            }
+        })
+    })
+}
+
+
+function o2ogocqNotify(text, qq, flag, desp, data) {
     text=encodeURIComponent(text);
     desp=encodeURIComponent(desp.replace(/🧧/g,"[CQ:face,id=192]"));
-    console.log(desp)
-    let body = {
-        url: `${O2O_GOCQ_URL}/send_private_msg?user_id=${qq}&group_id=${O2O_GOCQ_GROUP_ID}&message=${text}%0a${desp}`,
+    let body = ''
+    if(flag==1){
+        body = {url: `${O2O_GOCQ_URL}/send_private_msg?user_id=${qq}&group_id=${O2O_GOCQ_GROUP_ID}&message=${text}%0a${desp}`,}//不是好友
     }
-    console.log(`${O2O_GOCQ_URL}/send_private_msg?user_id=${qq}&group_id=${O2O_GOCQ_GROUP_ID}&message=${text}%0a${desp}`)
+    if(flag==2){
+        body = {url: `${O2O_GOCQ_URL}/send_private_msg?user_id=${qq}&message=${text}%0a${desp}`,}//是好友
+    }
     return new Promise(resolve => {
         $.get(body, async (err, resp, data) => {
             try {
