@@ -1,6 +1,6 @@
 ![Anurag’s github stats](https://github-readme-stats.vercel.app/api?username=Waikkii&show_icons=true&icon_color=CE1D2D&text_color=718096&bg_color=ffffff&hide_title=true)
 
-# 适配一对一QQ推送 ![progress](https://progress-bar.dev/1/"progress")
+# 适配一对一QQ推送（1%）
 
 ## Special statement:
 
