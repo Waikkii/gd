@@ -133,7 +133,7 @@ name_js=(
   "$repo"_jd_bookshop
   "$repo"_jd_cash
   "$repo"_jd_sgmh
-  "$repo6"_jd_cfd
+  "$repo"_jd_cfd
   "$repo"_jd_health
   "$repo"_jd_carnivalcity
   "$repo"_jd_city
