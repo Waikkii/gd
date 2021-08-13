@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-## 组队专用
+
+<<'COMMENT'
+Cron: 16 6 * * *  sh_team.sh
+COMMENT
+
 ## 组队任务
 team_task(){
     local p=$1                       ## 组队总账号数
@@ -43,10 +47,10 @@ team_task(){
             export JD_COOKIE=$result
             case $scr in
                 *.js)
-                    node /ql/scripts/$scr
+                    node /ql/$scr
                     ;;
                 *.sh)
-                    bash /ql/scripts/$scr
+                    bash /ql/$scr
                     ;;
             esac
         fi
@@ -54,11 +58,18 @@ team_task(){
     done
 }
 
+guagua_jd_xmGame=`find . -type f -name "*guagua_jd_xmGame.js"|head -1`
+jd_sendBeans=`find . -type f -name "*jd_sendBeans.js"|head -1`
+
 case $@ in
     jd_sendBeans)
-        team_task 21 1 "jd_sendBeans.js" ##送豆得豆
+        team_task 21 1 ${jd_sendBeans}     ##送豆得豆
         ;;
     guagua_jd_xmGame)
-        team_task 11 1 "guagua_jd_xmGame.js" ##小米-星空大冒险
+        team_task 11 1 ${guagua_jd_xmGame}  ##小米-星空大冒险
+        ;;
+    *)
+        team_task 21 1 ${jd_sendBeans}     ##送豆得豆
+        team_task 11 1 ${guagua_jd_xmGame}  ##小米-星空大冒险
         ;;
 esac
