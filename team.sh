@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 <<'COMMENT'
-Cron: 16 6 * * *  sh_team.sh
+Cron: 16 6 * * *  task /ql/config/team.sh
 COMMENT
 
 ## 组队任务
