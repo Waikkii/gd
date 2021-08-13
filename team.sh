@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 <<'COMMENT'
-Cron: 16 6 * * *  task /ql/config/team.sh
+Cron: 16 6 * * *  task team.sh
 COMMENT
 
 ## 组队任务
@@ -47,10 +47,10 @@ team_task(){
             export JD_COOKIE=$result
             case $scr in
                 *.js)
-                    node /ql/$scr
+                    node /ql/scripts/$scr
                     ;;
                 *.sh)
-                    bash /ql/$scr
+                    bash /ql/scripts/$scr
                     ;;
             esac
         fi
@@ -58,8 +58,8 @@ team_task(){
     done
 }
 
-guagua_jd_xmGame=`find . -type f -name "*guagua_jd_xmGame.js"|head -1`
-jd_sendBeans=`find . -type f -name "*jd_sendBeans.js"|head -1`
+guagua_jd_xmGame=`find . -type f -name "*guagua_jd_xmGame.js"|head -2`
+jd_sendBeans=`find . -type f -name "*jd_sendBeans.js"|head -2`
 
 case $@ in
     jd_sendBeans)
