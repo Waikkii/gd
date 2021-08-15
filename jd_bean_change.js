@@ -63,7 +63,7 @@ if ($.isNode()) {
 
         if ($.isNode()) {
           await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
-          if (process.env.O2O_GOCQ_URL) {
+          if (process.env.IS_O2O_PUSH=="True") {
             await notifyo2o.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, cookie, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
           }
         }
@@ -71,7 +71,7 @@ if ($.isNode()) {
       }
       await bean();
       await showMsg();
-      if (process.env.O2O_GOCQ_URL) {
+      if (process.env.IS_O2O_PUSH=="True") {
         await showoneMsg();
         await notifyo2o.sendNotify(`${$.name}`, cookie, `${oneMessage}`);
       }
