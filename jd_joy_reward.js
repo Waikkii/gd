@@ -23,7 +23,7 @@ cron "59 7,15,23 * * *" script-path=jd_joy_reward.js,tag=宠汪汪积分兑换�
  */
 // prettier-ignore
 const $ = new Env('宠汪汪积分兑换奖品');
-const zooFaker = require('./tool/JDJRValidator_Pure');
+const zooFaker = require('./utils/JDJRValidator_Pure');
 // $.get = zooFaker.injectToRequest2($.get.bind($));
 // $.post = zooFaker.injectToRequest2($.post.bind($));
 let allMessage = '';
@@ -96,15 +96,16 @@ Date.prototype.Format = function (fmt) { //author: meizz
       $.done();
     })
 
-
 async function joyReward() {
   try {
-    let nowtime = new Date().Format("s")
-    let starttime = process.env.JOY_STARTTIME ? process.env.JOY_STARTTIME : 59;
-    if(nowtime < 59) {
-      let sleeptime = (starttime - nowtime) * 1000;
-      console.log(`等待时间 ${sleeptime / 1000}`);
-      await zooFaker.sleep(sleeptime)
+    if (new Date().getMinutes() === 59) {
+      let nowtime = new Date().Format("s.S")
+      let starttime = process.env.JOY_STARTTIME ? process.env.JOY_STARTTIME : 60;
+      if(nowtime < 59) {
+        let sleeptime = (starttime - nowtime) * 1000;
+        console.log(`等待时间 ${sleeptime / 1000}`);
+        await zooFaker.sleep(sleeptime)
+      }
     }
     for (let j = 0; j <= 10; j++) {
       await getExchangeRewards();
@@ -220,7 +221,7 @@ async function joyReward() {
 }
 function getExchangeRewards() {
   let opt = {
-    url: "//jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F",
+    url: "//jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=ztmFUCxcPMNyUq0P",
     method: "GET",
     data: {},
     credentials: "include",
@@ -264,7 +265,7 @@ function getExchangeRewards() {
 function exchange(saleInfoId, orderSource) {
   let body = {"buyParam":{"orderSource":orderSource,"saleInfoId":saleInfoId},"deviceInfo":{}}
   let opt = {
-    "url": "//jdjoy.jd.com/common/gift/new/exchange?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F",
+    "url": "//jdjoy.jd.com/common/gift/new/exchange?reqSource=h5&invokeKey=ztmFUCxcPMNyUq0P",
     "data":body,
     "credentials":"include","method":"POST","header":{"content-type":"application/json"}
   }
