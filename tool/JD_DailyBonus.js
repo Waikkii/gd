@@ -37,7 +37,7 @@ var merge = {};
 
 var KEY = '';
 
-const Faker = require('./JDSignValidator')
+const Faker = require('./sign_graphics_validate')
 const zooFaker = require('./JDJRValidator_Pure')
 let fp = '', eid = '', md5
 
