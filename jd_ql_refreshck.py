@@ -1,6 +1,6 @@
-# 在这里输入青龙面板用户名密码，如果不填写，就自动从auth.json中读取
-username = ""
-password = ""
+"""
+new Env('青龙全自动更新cookie');
+"""
 
 import requests
 import time
@@ -10,6 +10,8 @@ import re
 requests.packages.urllib3.disable_warnings()
 
 token = ""
+username = ""
+password = ""
 if username == "" or password == "":
     f = open("/ql/config/auth.json")
     auth = f.read()
@@ -49,9 +51,8 @@ def getckitem(key):
 
 def wstopt(wskey):
     try:
-        url = "http://cdn.xia.me/getck"
+        url = "https://signer.nz.lu/getck"
         headers = {
-            "Host": "signer.nz.lu",
             "user-agent": "Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"
         }
         data = {"wskey": wskey, "key": "xb3z4z2m3n847"}
@@ -109,6 +110,8 @@ if __name__ == '__main__':
                     print("第%s个wskey可能过期了,pin为%s" % (count, wspin))
                 elif ptck == "未知错误" or ptck == "error":
                     print("第%s个wskey发生了未知错误,pin为%s" % (count, wspin))
+                elif "</html>" in ptck:
+                    print("你的ip被cloudflare拦截")
                 else:
                     ptpin = re.findall(r"pt_pin=(.*?);", ptck)[0]
                     item = getckitem("pt_pin=" + ptpin)
