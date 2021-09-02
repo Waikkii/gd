@@ -191,7 +191,7 @@ function getsecretPin(pin) {
     let data = {
       "pt_pin": pin
     }
-    let HostArr = ['jdsign.cf', 'jdsign.tk']
+    let HostArr = ['jdsign.cf', 'signer.nz.lu']
     let Host = HostArr[Math.floor((Math.random() * HostArr.length))]
     let options = {
       url: `https://cdn.jdsign.cf/pin`,
