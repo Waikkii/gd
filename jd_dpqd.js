@@ -1,9 +1,7 @@
 /*
+cron "2 0 * * *" jd_dpqd.js
 店铺签到，各类店铺签到，有新的店铺直接添加token即可
 搬运cui521大佬脚本，请勿外传！！！
-[Script]
-cron "26 1,9 * * *" script-path=https://github.com/acoolbook/scripts/edit/main/jd_dpqd1.js, tag=店铺签到
-
 */
 const $ = new Env('店铺签到');
 
@@ -12,64 +10,37 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
+
 const JD_API_HOST = 'https://api.m.jd.com/api?appid=interCenter_shopSign';
 
 let activityId=''
 let vender=''
 let num=0
 let shopname=''
+
 const token=[
-  
-  
-"30DE3F2E8B4278A120007C8CD0D4F835",
-"44867BDF0B792D67AAD66ADC272469F1",
-"9F838C40E53D700D65489EFFE9CE6EB8",
-"F2EA01C2D6237A53EACA3E5E87777B69",
-"77F209299815610B30758E2628357F4B",
-"F6F40551FB023059945D84D4B3D3571E",
-"76650061572C564F709F4A9EF62E09C5",
-"B8790B7045C6EE04CC67121D67F3F2C4",
-"1BAE6E01EB4759A6A5C62B99DEAB4D73",
-"E9CF411278CAAADA118B49B2BDD2C764",
-"0523948DB9D44ED2DD3651594778C2BF",
-"D7DE98421ABF3C242950D99AC9828155",
-"6833634A0DFB7D52BCBD5050AF858492",
-"81F755FA126864DA9BB11EB940C47298",
-"72B066D668150DDE69D1F1570DABC23C",
-"1377B735C5112E7F461F7DC0817C5059",
-"884D099AD89CCD150252A5706C2E27D7",
-"2D2DBD5AA9F56793A72AC3AD0DE889C2",
-"F238D3B8D90F15A835C44C4EAE3D9620",
-"8B44848727F8F639BCEFB91606170787",
-"0889F8AF8A5819B74641D71F54E75F73",
-"156E4A2F530BED1336BF8DD11CF6F698",
-"7B515F55AB19A433787F4E2142F296B5",
-"1BE5C08D6B07CA006BED609EB4041C88",
-"C30FF286EDFB4427BA604570E457A5BF",
-"434DAE741BE9A0490553DAF956FEFE65",
-"92AE8E927A684C0A748E6465D55445BF",
-"9B45653CFEFE49045C2748E8AA9E37B4",
-"4A02128626C3691B6A98341C3F8CD27E",
-"3962EBC803A160803F116195209AAA82",
-"892C0EE8D4E64EEE821CDD45684312E0",
-"D8778E6FE3F7E55E2E9027CC053AA7E9",
-"01245827A869F577FD57E66194BE1F43",
-"8236EF432433E5EA1B78BCF18328A0BC",
-"56547688313E9E1C44619AC6237FA481",
-"F40EBB78F80A141D0C511FAAEF2AF8A9",
-"E05A82C3CB39328EB17253BADBA6C224",
-"C7BBA327078D75CE229E306D1C0CF22C",
-"CDF2F1136D49903E19DF07B8DE438709",
-"7DE1E4B12326576BF7C5D347CC909451",
-"1006B5AFC88A3FEE35959BDBAD843EA9",
-"BAFE21B93BFA614C21BD8EF6931CBF61",
-"513B43DB672C8C7B0D975DB75328A131",
-"F37C5914C346DB9B186ACE82BDC779F5",
-"4B52F3FA75BD4FE78970696E75FE4B5B",
-"AFAEF4A8A875B67CD860C8646EB0B5F8",
-  
+
+'020E4A5B75AE493CDF3020628CA72FDE',//3天，10豆；5天，20豆；7天，35豆；
+'ACD7EB42FB65AF1A447AEB329235DE04',//每日，3豆；15天，100豆；
+'5BB2C6C6332AD842011240152F7550EB',//每日，6豆；7天，100豆；
+'6C6B2702DDAAEDEBE5E68E41B6264CF6',//每日，5豆；7天，200积分；
+'CDC56C42F64CA34677E5894F28AF4871',//每日，100分；1天，200分、2豆；2天，1000分、25-3券；
+'2075567CC6ED0F30EAFFCF901F6C486D',//每日，2豆；10天，100豆；
+'CAF5BA5BF6B8317E282FCBF9F5C00B0E',//每日，2豆；5天，10豆；10天，20豆；15天，25豆；
+'A133DE5D8D1A5A612F49CBE1D9BCE7AA',//每日，2豆；20天，5元e卡；
+'E9E4861F0B12E5E483C949C818E3EAB8',//每日，1豆；10天，20豆；20天，50豆；
+'8FD67D1FD193B5C19C277B7406106EDD',//每日，5豆；7天，100分、50豆；
+'A9F558F6789D649FEB6436A51D7A6059',//每日，10豆；3天，20分；7天100豆；
+'83E9B38C310EB5D26657977EF8FECA0F',//7天，20积分；15天，30豆；
+'7DE1E4B12326576BF7C5D347CC909451',//每日，10豆；7天，100豆；
+'513B43DB672C8C7B0D975DB75328A131',//每日，5豆；26天，88豆；
+'9BABD41E5674FD5791963D5366BEC634',//每日，1豆；5天，10豆；21天，100豆;
+'EFFD0BF4069A8B6882A55FB07ACDA60F',//10天，30豆；20天，60豆；30天，100豆;
+
 ]
 //IOS等用户直接用NobyDa的jd cookie
+
+$.TokenList =[];
 
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -91,6 +62,15 @@ if ($.isNode()) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
+  
+	$.TokenLists = []
+  
+        $.innerTokenList = await getStoreTokee('https://zy.kejiwanjia.com/jd_dpqiandao.php');
+        //$.innerTokenList = token
+	
+	$.TokenLists.push(...$.TokenList,...$.innerTokenList);
+
+	
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -109,8 +89,9 @@ if ($.isNode()) {
         }
         continue
       }
-      await dpqd()
-      await showMsg()
+      await babel_diy_zeus();
+	  await showMsg()
+      //if(i  <1 ) {await showMsg()}
     }
   }
 })()
@@ -122,16 +103,19 @@ if ($.isNode()) {
     })
 
 //开始店铺签到
-async function dpqd(){
-  for (var j = 0; j < token.length; j++) {
+async function babel_diy_zeus(){
+	
+  for (var j = 0; j < $.TokenLists.length; j++) {
+	  
+	await $.wait(3000);  
     num=j+1
-    if (token[j]=='') {continue}
-    await getvenderId(token[j])
+    if ($.TokenLists[j]=='') {continue}
+    await getvenderId($.TokenLists[j])
     if (vender=='') {continue}
     await getvenderName(vender)
-    await getActivityInfo(token[j],vender)
-    await signCollectGift(token[j],vender,activityId)
-    await taskUrl(token[j],vender)
+    await getActivityInfo($.TokenLists[j],vender)
+    await signCollectGift($.TokenLists[j],vender,activityId)
+    await taskUrl($.TokenLists[j],vender)
   }
 }
 
@@ -376,6 +360,45 @@ function jsonParse(str) {
       return [];
     }
   }
+}
+
+function getStoreTokee(url) {
+  return new Promise(async resolve => {
+    const options = {
+      "url": `${url}?${new Date()}`,
+      "timeout": 10000,
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }
+    };
+    if ($.isNode() && process.env.TG_PROXY_HOST && process.env.TG_PROXY_PORT) {
+      const tunnel = require("tunnel");
+      const agent = {
+        https: tunnel.httpsOverHttp({
+          proxy: {
+            host: process.env.TG_PROXY_HOST,
+            port: process.env.TG_PROXY_PORT * 1
+          }
+        })
+      }
+      Object.assign(options, { agent })
+    }
+    let res = []
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+        } else {
+          if (data) res = JSON.parse(data)
+        }
+      } catch (e) {
+        // $.logErr(e, resp)
+      } finally {
+        resolve(res || []);
+      }
+    })
+    await $.wait(10000)
+    resolve(res);
+  })
 }
 
 // prettier-ignore
