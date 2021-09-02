@@ -1,10 +1,10 @@
 /*
-cron "30 10,22 * * *" jd_bean_change.js, tag:资产变化强化版by-ccwav
+cron "30 10,22 * * *" jd_bean_change_enhanced.js, tag:强化版京东资产变动通知
 */
 
 //更新by ccwav,20210902
 
-const $ = new Env('京东资产变动');
+const $ = new Env('强化版京东资产变动通知');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const JXUserAgent =  $.isNode() ? (process.env.JX_USER_AGENT ? process.env.JX_USER_AGENT : ``):``;
 //Node.js用户请在jdCookie.js处填写京东ck;
