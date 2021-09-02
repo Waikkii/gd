@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*
 '''
-cron: 15 */6 * * * wskey.py
+cron: 15 */6 * * * jd_checkwstimely.py
 new Env('ck实时检测');
 '''
 import zlib, base64
