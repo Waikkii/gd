@@ -4,6 +4,7 @@
 每次都要手动打开才能跑 不知道啥问题
 号1默认给我助力,后续接龙 2给1 3给2
  19.0复制整段话 http:/J7ldD7ToqMhRJI星系牧场养牛牛，可获得DHA专属奶！%VAjYb8me2b!→去猄倲←
+通知变量QQXING_NOTIFY_CONTROL
 [task_local]
 #星系牧场
 1 0-23/2 * * * 
@@ -108,7 +109,7 @@ $.shareuuid = "5e81094ee1d640b2996883b48d0c410a"
             }
         }
         if (message.length != 0) {
-        if ($.isNode()) {
+        if ($.isNode() && process.env.QQXING_NOTIFY_CONTROL) {
            await notify.sendNotify("星系牧场", `${message}\n牧场入口：QQ星儿童牛奶京东自营旗舰店->星系牧场\n\n吹水群：https://t.me/wenmouxx`);
    }  else {
             $.msg($.name, "", '星系牧场' + message)
