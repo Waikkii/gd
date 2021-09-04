@@ -308,8 +308,8 @@ function taskUrl(token,venderId) {
 
 async function showMsg() {
   if ($.isNode()) {
-    $.msg($.name, '', `【京东账号${$.index}】${$.nickName}\n${message}`);
-    allMessage += `【京东账号${$.index}】${$.nickName}\n${message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
+    $.msg($.name, '', `****【京东账号${$.index}】${$.nickName}****\n${message}`);
+    allMessage += `****【京东账号${$.index}】${$.nickName}****\n${message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
   }
 }
 
