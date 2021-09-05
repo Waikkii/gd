@@ -217,7 +217,7 @@ function getActivityInfo(token,venderId) {
             mes += "签到"+level+"天,获得"+discount+'豆'
           }
           // console.log(message+mes+'\n')
-          // message += mes+'\n'
+          message += mes+'\n'
         }
       } catch (e) {
         $.logErr(e, resp);
