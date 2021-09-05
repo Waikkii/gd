@@ -23,7 +23,7 @@ except Exception as e:
     sys.exit(1)
 os.environ['no_proxy']='*'
 requests.packages.urllib3.disable_warnings()
-ver=903
+ver=905
 def ql_login():
     path='/ql/config/auth.json'
     if os.path.isfile(path):
@@ -74,24 +74,14 @@ def get_ck():
         logger.info("未添加JD_COOKIE变量")
         sys.exit(0)
 def check_ck(ck):
-    url='https://wq.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New&callSource=mainorder'
-    headers={'Cookie':ck,'Referer':'https://home.m.jd.com/myJd/home.action','User-Agent':ua,}
-    try:
-        res=requests.get(url=url,headers=headers,verify=False,timeout=10)
-        if res.status_code==200:
-            code=int(json.loads(res.text)['retcode'])
-            pin=ck.split(";")[1]
-            if code==0:
-                logger.info(str(pin)+";状态正常")
-                return True
-            else:
-                logger.info(str(pin)+";状态失效")
-                return False
-        else:
-            logger.info("JD接口错误, 切换第二接口")
-            url='https://me-api.jd.com/user_new/info/GetJDUserInfoUnion'
-            headers={'Cookie':ck,'User-Agent':ua,}
-            res=requests.get(url=url,headers=headers,verify=False,timeout=30)
+    if "QL_WSCK" in os.environ:
+        logger.info("不检查账号有效性--------------------")
+        return False
+    else:
+        url='https://wq.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New&callSource=mainorder'
+        headers={'Cookie':ck,'Referer':'https://home.m.jd.com/myJd/home.action','User-Agent':ua,}
+        try:
+            res=requests.get(url=url,headers=headers,verify=False,timeout=10)
             if res.status_code==200:
                 code=int(json.loads(res.text)['retcode'])
                 pin=ck.split(";")[1]
@@ -101,10 +91,24 @@ def check_ck(ck):
                 else:
                     logger.info(str(pin)+";状态失效")
                     return False
-    except:
-        logger.info("JD接口错误! ")
-        logger.info("脚本退出")
-        sys.exit(1)
+            else:
+                logger.info("JD接口错误, 切换第二接口")
+                url='https://me-api.jd.com/user_new/info/GetJDUserInfoUnion'
+                headers={'Cookie':ck,'User-Agent':ua,}
+                res=requests.get(url=url,headers=headers,verify=False,timeout=30)
+                if res.status_code==200:
+                    code=int(json.loads(res.text)['retcode'])
+                    pin=ck.split(";")[1]
+                    if code==0:
+                        logger.info(str(pin)+";状态正常")
+                        return True
+                    else:
+                        logger.info(str(pin)+";状态失效")
+                        return False
+        except:
+            logger.info("JD接口错误! ")
+            logger.info("脚本退出")
+            sys.exit(1)
 def getToken(wskey):
     headers={'cookie':wskey,'User-Agent':ua,'content-type':'application/x-www-form-urlencoded; charset=UTF-8','charset':'UTF-8','accept-encoding':'br,gzip,deflate'}
     params={'functionId':'genToken','clientVersion':'10.1.2','client':'android','uuid':uuid,'st':st,'sign':sign,'sv':sv}
@@ -140,7 +144,7 @@ def appjmp(wskey,tokenKey):
             logger.info(str(wskey)+"wskey状态失效")
             return False,jd_ck
         else:
-            logger.info(str(wskey)+"wskey状态正常")
+            logger.info(str(wskey)+" wskey状态正常")
             return True,jd_ck
     except:
         logger.info("接口转换失败, 默认wskey失效")
@@ -184,7 +188,7 @@ def boom():
         logger.info("--------------------")
 def update():
     up_ver=int(cloud_arg['update'])
-    if ver<=up_ver:
+    if ver>=up_ver:
         logger.info("当前脚本版本: "+str(ver))
         logger.info("--------------------")
     else:
@@ -325,6 +329,7 @@ if __name__=='__main__':
                     if return_ws[0]: 
                         nt_key=str(return_ws[1])
                         logger.info("wskey转换成功")
+                        logger.info("--------------------")
                         eid=return_serch[2] 
                         ql_update(eid,nt_key) 
                     else:
