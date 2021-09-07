@@ -1,6 +1,7 @@
 ![Anurag’s github stats](https://github-readme-stats.vercel.app/api?username=Waikkii&show_icons=true&icon_color=CE1D2D&text_color=718096&bg_color=ffffff&hide_title=true)
 
-# 适配一对一QQ推送（1%）
+# 适配一对一QQ推送（1%）鸽个一个月
+# 自用 请勿fork
 
 ## Special statement:
 
@@ -32,7 +33,5 @@
 * [@star261](https://github.com/star261)
 
 * [@smiek2221](https://github.com/smiek2221)
-
-* [@cdle](https://github.com/cdle)
 
 * [@Aaron-lv](https://github.com/Aaron-lv)
