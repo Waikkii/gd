@@ -1,5 +1,5 @@
 /*
-cron "30 10,22 * * *" jjd_bean_change_enhanced.js, tag:资产变化强化版
+cron "30 10,22 * * *" jd_bean_change_enhanced.js, tag:资产变化强化版
 */
 
 const $ = new Env('强化版京东资产变动通知');
