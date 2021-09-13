@@ -4,10 +4,9 @@
 每次都要手动打开才能跑 不知道啥问题
 号1默认给我助力,后续接龙 2给1 3给2
  19.0复制整段话 http:/J7ldD7ToqMhRJI星系牧场养牛牛，可获得DHA专属奶！%VAjYb8me2b!→去猄倲←
-通知变量QQXING_NOTIFY_CONTROL
 [task_local]
 #星系牧场
-1 0-23/2 * * * 
+1 0-23/2 * * * jd_qqxing.js
 */
 const $ = new Env('QQ星系牧场');
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -95,10 +94,10 @@ $.shareuuid = "5e81094ee1d640b2996883b48d0c410a"
                     for (k = 0; k < $.drawchance; k++) {
                         await draw()
                     }
-                    let exchanges =Math.floor($.foodNum/3000)
-                    console.log(`可兑换 ${exchanges} 次 50京🐶`)
+                    let exchanges =Math.floor($.foodNum/1000)
+                    console.log(`可兑换 ${exchanges} 次 20京🐶`)
                     for(q = 0;q<exchanges && Exchange;q++){
-                    await exchange(14)   
+                    await exchange(13)   
                     }
                     await getinfo()
                     if(!Exchange){console.log("你 默认 不兑换东西,请自行进去活动兑换")}
@@ -109,7 +108,7 @@ $.shareuuid = "5e81094ee1d640b2996883b48d0c410a"
             }
         }
         if (message.length != 0) {
-        if ($.isNode() && process.env.QQXING_NOTIFY_CONTROL) {
+        if ($.isNode()) {
            await notify.sendNotify("星系牧场", `${message}\n牧场入口：QQ星儿童牛奶京东自营旗舰店->星系牧场\n\n吹水群：https://t.me/wenmouxx`);
    }  else {
             $.msg($.name, "", '星系牧场' + message)
@@ -401,7 +400,7 @@ function getUid() {
                            if(data.data.openCardStatus !=3){
                            console.log("当前未开卡,无法助力和兑换奖励哦")
                            }                           
-                            $.shareuuid = data.data.uid                            
+                            // $.shareuuid = data.data.uid                            
                             console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${$.shareuuid}\n`);
                         }
                       }
