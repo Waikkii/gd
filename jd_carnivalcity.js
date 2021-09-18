@@ -1,6 +1,6 @@
 /*
 京东手机狂欢城活动
-活动时间: 2021-8-9至2021-8-28
+活动时间: 2021-9-16至2021-10-01
 活动入口：暂无 [活动地址](https://carnivalcity.m.jd.com)
 
 往期奖励：
@@ -47,7 +47,7 @@ if ($.isNode()) {
 let inviteCodes = [];
 $.shareCodesArr = [];
 const JD_API_HOST = 'https://api.m.jd.com/api';
-const activeEndTime = '2021/08/28 00:00:00+08:00';//活动结束时间
+const activeEndTime = '2021/10/01 00:00:00+08:00';//活动结束时间
 let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000;
 !(async () => {
   if (!cookiesArr[0]) {
