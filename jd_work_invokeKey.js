@@ -1,3 +1,10 @@
+/*
+cron: 15 */6 * * * jd_checkwstimely.py
+new Env('ck实时检测');
+原作者：@Zy143L
+脚本地址：https://github.com/Zy143L/wskey/blob/main/wskey.py
+*/
+
 let common = require("./function/common");
 let $ = new common.env('京东invokeKey获取替换');
 let fs = require("fs");
