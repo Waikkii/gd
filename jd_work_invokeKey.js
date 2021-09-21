@@ -1,8 +1,7 @@
 /*
-cron: 15 */6 * * * jd_checkwstimely.py
-new Env('ck实时检测');
-原作者：@Zy143L
-脚本地址：https://github.com/Zy143L/wskey/blob/main/wskey.py
+cron: "50 7,15,23 * * *" jd_work_invokeKey.js
+new Env('京东invokeKey获取替换');
+原作者：@airacg
 */
 
 let common = require("./function/common");
