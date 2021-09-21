@@ -1,3 +1,9 @@
+/*
+cron: "58 59 7,15,23 * * *" jd_exchange_joy.js
+new Env('宠汪汪兑换京豆');
+原作者：@airacg
+*/
+
 let common = require("./function/common");
 let $ = new common.env('宠汪汪兑换京豆');
 let fs = require("fs");
