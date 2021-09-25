@@ -16,7 +16,7 @@ const {
     getEnvs,
     DisableCk,
     EnableCk
-} = require('./ql');
+} = require('./tool/ql');
 const api = got.extend({
     retry: {
         limit: 0
