@@ -265,16 +265,20 @@ function requireConfig() {
     console.log(`开始获取${$.name}配置文件\n`);
     //Node.js用户请在jdCookie.js处填写京东ck;
     let shareCodes = []
-    let CKNumber = ''
     console.log(`共${cookiesArr.length}个京东账号\n`);
-    if ($.isNode() && process.env.JDSGMH_SHARECODES) {
-      CKNumber = process.env.JDSGMH_SHARECODES.split('&')[0];
-      shareCodes = process.env.JDSGMH_SHARECODES.split('&')[1];
-    }
     $.shareCodesArr = [];
     if ($.isNode()) {
-      for (let i = 0; i < Number(CKNumber); i++) {
+      for (let i = 0; i < cookiesArr.length); i++) {
+        shareCodes = process.env["FRUITSHARECODES"+i.toString()];
         $.shareCodesArr.push(shareCodes);
+      }
+      for (let i = 0; i < Number(CKNumber); i++) {
+        if (process.env["JDSGMH_SHARECODES"+i.toString()]) {
+          shareCodes = process.env["JDSGMH_SHARECODES"+i.toString()];
+          $.shareCodesArr.push(shareCodes);
+        } else {
+          break
+        }
       }
     }
     console.log(`您提供了${$.shareCodesArr.length}个账号的${$.name}助力码\n`);
