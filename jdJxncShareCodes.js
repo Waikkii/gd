@@ -17,6 +17,7 @@ let CKNumber = ''
 CKNumber = process.env.JD_COOKIE.split('&').length;
 console.log(CKNumber)
 
+
 for (let i = 0; i < Number(CKNumber); i++) {
   if (process.env["JXNC_SHARECODES"+i.toString()]) {
     JxncShareCode = process.env["JXNC_SHARECODES"+i.toString()];
