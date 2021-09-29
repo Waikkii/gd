@@ -19,4 +19,3 @@ for (let i = 0; i < Number(CKNumber); i++) {
   const index = (i + 1 === 1) ? '' : (i + 1);
   exports['shareCodes' + index] = shareCodes;
 }
-
