@@ -697,17 +697,14 @@ function requireConfig() {
     console.log(`开始获取${$.name}配置文件\n`);
     let shareCodes = [];
     if ($.isNode() && process.env.JDCFD_SHARECODES) {
-      if (process.env.JDCFD_SHARECODES.indexOf('\n') > -1) {
-        shareCodes = process.env.JDCFD_SHARECODES.split('\n');
-      } else {
-        shareCodes = process.env.JDCFD_SHARECODES.split('&');
-      }
+      CKNumber = process.env.JDCFD_SHARECODES.split('&')[0];
+      shareCodes = process.env.JDCFD_SHARECODES.split('&')[1];
     }
     $.shareCodesArr = [];
     if ($.isNode()) {
       Object.keys(shareCodes).forEach((item) => {
-        if (shareCodes[item]) {
-          $.shareCodesArr.push(shareCodes[item])
+        if (shareCodes) {
+          $.shareCodesArr.push(shareCodes)
         }
       })
     } else {
