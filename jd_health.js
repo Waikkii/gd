@@ -309,20 +309,15 @@ function requireConfig() {
     //Node.js用户请在jdCookie.js处填写京东ck;
     let shareCodes = [];
     if ($.isNode()) {
-      if (process.env.JDHEALTH_SHARECODES) {
-        if (process.env.JDHEALTH_SHARECODES.indexOf('\n') > -1) {
-          shareCodes = process.env.JDHEALTH_SHARECODES.split('\n');
-        } else {
-          shareCodes = process.env.JDHEALTH_SHARECODES.split('&');
-        }
-      }
+      CKNumber = process.env.DDFACTORY_SHARECODES.split('&')[0];
+      shareCodes = process.env.DDFACTORY_SHARECODES.split('&')[1];
     }
     console.log(`共${cookiesArr.length}个京东账号\n`);
     $.shareCodesArr = [];
     if ($.isNode()) {
       Object.keys(shareCodes).forEach((item) => {
-        if (shareCodes[item]) {
-          $.shareCodesArr.push(shareCodes[item])
+        if (shareCodes) {
+          $.shareCodesArr.push(shareCodes)
         }
       })
     }
