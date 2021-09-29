@@ -268,7 +268,7 @@ function requireConfig() {
     console.log(`共${cookiesArr.length}个京东账号\n`);
     $.shareCodesArr = [];
     if ($.isNode()) {
-      for (let i = 0; i < cookiesArr.length); i++) {
+      for (let i = 0; i < cookiesArr.length; i++) {
         if (process.env["JDSGMH_SHARECODES"+i.toString()]) {
           shareCodes = process.env["JDSGMH_SHARECODES"+i.toString()];
           $.shareCodesArr.push(shareCodes);
