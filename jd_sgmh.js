@@ -265,19 +265,17 @@ function requireConfig() {
     console.log(`开始获取${$.name}配置文件\n`);
     //Node.js用户请在jdCookie.js处填写京东ck;
     let shareCodes = []
+    let CKNumber = ''
     console.log(`共${cookiesArr.length}个京东账号\n`);
     if ($.isNode() && process.env.JDSGMH_SHARECODES) {
-      if (process.env.JDSGMH_SHARECODES.indexOf('\n') > -1) {
-        shareCodes = process.env.JDSGMH_SHARECODES.split('\n');
-      } else {
-        shareCodes = process.env.JDSGMH_SHARECODES.split('&');
-      }
+      CKNumber = process.env.JDSGMH_SHARECODES.split('&')[0];
+      shareCodes = process.env.JDSGMH_SHARECODES.split('&')[1];
     }
     $.shareCodesArr = [];
     if ($.isNode()) {
       Object.keys(shareCodes).forEach((item) => {
-        if (shareCodes[item]) {
-          $.shareCodesArr.push(shareCodes[item])
+        if (shareCodes) {
+          $.shareCodesArr.push(shareCodes)
         }
       })
     }
