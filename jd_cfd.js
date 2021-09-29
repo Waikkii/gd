@@ -702,11 +702,9 @@ function requireConfig() {
     }
     $.shareCodesArr = [];
     if ($.isNode()) {
-      Object.keys(shareCodes).forEach((item) => {
-        if (shareCodes) {
-          $.shareCodesArr.push(shareCodes)
-        }
-      })
+      for (let i = 0; i < Number(CKNumber); i++) {
+        $.shareCodesArr.push(shareCodes);
+      }
     } else {
       if ($.getdata('jd_jxCFD')) $.shareCodesArr = $.getdata('jd_jxCFD').split('\n').filter(item => !!item);
       console.log(`\nBoxJs设置的京喜财富岛邀请码:${$.getdata('jd_jxCFD')}\n`);
