@@ -13,14 +13,16 @@ let JxncShareCodes = [
   '',//账号一的好友shareCode
   '',//账号二的好友shareCode
 ]
-if (process.env.JXNC_SHARECODES) {
-    CKNumber = process.env.JXNC_SHARECODES.split('&')[0];
-    JxncShareCodes = process.env.JXNC_SHARECODES.split('&')[1];
-} else {
-  console.log(`由于您环境变量里面(JXNC_SHARECODES)未提供助力码，故此处运行将会给脚本内置的码进行助力，请知晓！`)
-}
+let CKNumber = ''
+CKNumber = process.env.JD_COOKIE.split('&').length;
+console.log(CKNumber)
 
 for (let i = 0; i < Number(CKNumber); i++) {
-  const index = (i + 1 === 1) ? '' : (i + 1);
-  exports['JxncShareCode' + index] = JxncShareCodes;
+  if (process.env["JXNC_SHARECODES"+i.toString()]) {
+    JxncShareCode = process.env["JXNC_SHARECODES"+i.toString()];
+    const index = (i + 1 === 1) ? '' : (i + 1);
+    exports['JxncShareCode' + index] = JxncShareCode;
+  } else {
+    break
+  }
 }
