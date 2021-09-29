@@ -7,16 +7,16 @@ let PetShareCodes = [
   '',//账号一的好友shareCode
   '',//账号二的好友shareCode
 ]
-
-if (process.env.PETSHARECODES) {
-  CKNumber = process.env.PETSHARECODES.split('&')[0];
-  PetShareCodes = process.env.PETSHARECODES.split('&')[1];
-} else {
-  console.log(`由于您环境变量(PETSHARECODES)里面未提供助力码，故此处运行将会给脚本内置的码进行助力，请知晓！`)
-}
+let CKNumber = ''
+CKNumber = process.env.JD_COOKIE.split('&').length;
+console.log(CKNumber)
 
 for (let i = 0; i < Number(CKNumber); i++) {
-  const index = (i + 1 === 1) ? '' : (i + 1);
-  exports['PetShareCode' + index] = PetShareCodes;
+  if (process.env["PETSHARECODES"+i.toString()]) {
+    PetShareCode = process.env["PETSHARECODES"+i.toString()];
+    const index = (i + 1 === 1) ? '' : (i + 1);
+    exports['PetShareCode' + index] = PetShareCode;
+  } else {
+    break
+  }
 }
-
