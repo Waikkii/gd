@@ -10,7 +10,7 @@ let shareCodes = [
 let CKNumber = ''
 if (process.env.DDFACTORY_SHARECODES) {
   CKNumber = process.env.DDFACTORY_SHARECODES.split('&')[0];
-  FruitShareCodes = process.env.DDFACTORY_SHARECODES.split('&')[1];
+  shareCodes = process.env.DDFACTORY_SHARECODES.split('&')[1];
 } else {
   console.log(`由于您环境变量(DDFACTORY_SHARECODES)里面未提供助力码，故此处运行将会给脚本内置的码进行助力，请知晓！`)
 }
