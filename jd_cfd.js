@@ -697,7 +697,7 @@ function requireConfig() {
     console.log(`开始获取${$.name}配置文件\n`);
     let shareCodes = [];
     if ($.isNode()) {
-      for (let i = 0; i < cookiesArr.length); i++) {
+      for (let i = 0; i < cookiesArr.length; i++) {
         if (process.env["JDCFD_SHARECODES"+i.toString()]) {
           shareCodes = process.env["JDCFD_SHARECODES"+i.toString()];
           $.shareCodesArr.push(shareCodes);
