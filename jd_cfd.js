@@ -696,18 +696,15 @@ function requireConfig() {
   return new Promise(resolve => {
     console.log(`开始获取${$.name}配置文件\n`);
     let shareCodes = [];
-    if ($.isNode() && process.env.JDCFD_SHARECODES) {
-      CKNumber = process.env.JDCFD_SHARECODES.split('&')[0];
-      shareCodes = process.env.JDCFD_SHARECODES.split('&')[1];
-    }
-    $.shareCodesArr = [];
     if ($.isNode()) {
-      for (let i = 0; i < Number(CKNumber); i++) {
-        $.shareCodesArr.push(shareCodes);
+      for (let i = 0; i < cookiesArr.length); i++) {
+        if (process.env["JDCFD_SHARECODES"+i.toString()]) {
+          shareCodes = process.env["JDCFD_SHARECODES"+i.toString()];
+          $.shareCodesArr.push(shareCodes);
+        } else {
+          break
+        }
       }
-    } else {
-      if ($.getdata('jd_jxCFD')) $.shareCodesArr = $.getdata('jd_jxCFD').split('\n').filter(item => !!item);
-      console.log(`\nBoxJs设置的京喜财富岛邀请码:${$.getdata('jd_jxCFD')}\n`);
     }
     console.log(`您提供了${$.shareCodesArr.length}个账号的${$.name}助力码\n`);
     resolve()
