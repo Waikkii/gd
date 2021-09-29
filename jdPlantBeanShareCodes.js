@@ -10,7 +10,7 @@ let PlantBeanShareCodes = [
 
 if (process.env.PLANT_BEAN_SHARECODES) {
   CKNumber = process.env.PLANT_BEAN_SHARECODES.split('&')[0];
-  FruitShareCodes = process.env.PLANT_BEAN_SHARECODES.split('&')[1];
+  PlantBeanShareCodes = process.env.PLANT_BEAN_SHARECODES.split('&')[1];
 } else {
   console.log(`由于您环境变量(PLANT_BEAN_SHARECODES)里面未提供助力码，故此处运行将会给脚本内置的码进行助力，请知晓！`)
 }
