@@ -11,6 +11,7 @@ let CKNumber = ''
 CKNumber = process.env.JD_COOKIE.split('&').length;
 console.log(CKNumber)
 
+
 for (let i = 0; i < Number(CKNumber); i++) {
   if (process.env["PETSHARECODES"+i.toString()]) {
     PetShareCode = process.env["PETSHARECODES"+i.toString()];
