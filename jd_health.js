@@ -309,14 +309,13 @@ function requireConfig() {
     //Node.js用户请在jdCookie.js处填写京东ck;
     let shareCodes = [];
     if ($.isNode()) {
-      CKNumber = process.env.DDFACTORY_SHARECODES.split('&')[0];
-      shareCodes = process.env.DDFACTORY_SHARECODES.split('&')[1];
-    }
-    console.log(`共${cookiesArr.length}个京东账号\n`);
-    $.shareCodesArr = [];
-    if ($.isNode()) {
-      for (let i = 0; i < Number(CKNumber); i++) {
-        $.shareCodesArr.push(shareCodes);
+      for (let i = 0; i < cookiesArr.length); i++) {
+        if (process.env["JDHEALTH_SHARECODES"+i.toString()]) {
+          shareCodes = process.env["JDHEALTH_SHARECODES"+i.toString()];
+          $.shareCodesArr.push(shareCodes);
+        } else {
+          break
+        }
       }
     }
     console.log(`您提供了${$.shareCodesArr.length}个账号的${$.name}助力码\n`);
