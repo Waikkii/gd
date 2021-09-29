@@ -309,7 +309,7 @@ function requireConfig() {
     //Node.js用户请在jdCookie.js处填写京东ck;
     let shareCodes = [];
     if ($.isNode()) {
-      for (let i = 0; i < cookiesArr.length); i++) {
+      for (let i = 0; i < cookiesArr.length; i++) {
         if (process.env["JDHEALTH_SHARECODES"+i.toString()]) {
           shareCodes = process.env["JDHEALTH_SHARECODES"+i.toString()];
           $.shareCodesArr.push(shareCodes);
