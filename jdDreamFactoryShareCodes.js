@@ -20,5 +20,3 @@ for (let i = 0; i < Number(CKNumber); i++) {
     break
   }
 }
-
-
