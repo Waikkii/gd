@@ -273,11 +273,9 @@ function requireConfig() {
     }
     $.shareCodesArr = [];
     if ($.isNode()) {
-      Object.keys(shareCodes).forEach((item) => {
-        if (shareCodes) {
-          $.shareCodesArr.push(shareCodes)
-        }
-      })
+      for (let i = 0; i < Number(CKNumber); i++) {
+        $.shareCodesArr.push(shareCodes);
+      }
     }
     console.log(`您提供了${$.shareCodesArr.length}个账号的${$.name}助力码\n`);
     resolve()
