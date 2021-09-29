@@ -15,7 +15,7 @@ let JxncShareCodes = [
 ]
 if (process.env.JXNC_SHARECODES) {
     CKNumber = process.env.JXNC_SHARECODES.split('&')[0];
-    FruitShareCodes = process.env.JXNC_SHARECODES.split('&')[1];
+    JxncShareCodes = process.env.JXNC_SHARECODES.split('&')[1];
 } else {
   console.log(`由于您环境变量里面(JXNC_SHARECODES)未提供助力码，故此处运行将会给脚本内置的码进行助力，请知晓！`)
 }
