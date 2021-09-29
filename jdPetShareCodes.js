@@ -10,7 +10,7 @@ let PetShareCodes = [
 
 if (process.env.PETSHARECODES) {
   CKNumber = process.env.PETSHARECODES.split('&')[0];
-  FruitShareCodes = process.env.PETSHARECODES.split('&')[1];
+  PetShareCodes = process.env.PETSHARECODES.split('&')[1];
 } else {
   console.log(`由于您环境变量(PETSHARECODES)里面未提供助力码，故此处运行将会给脚本内置的码进行助力，请知晓！`)
 }
