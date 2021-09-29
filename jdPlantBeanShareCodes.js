@@ -7,14 +7,16 @@ let PlantBeanShareCodes = [
   '',//账号一的好友shareCode
   '',//账号二的好友shareCode
 ]
+let CKNumber = ''
+CKNumber = process.env.JD_COOKIE.split('&').length;
+console.log(CKNumber)
 
-if (process.env.PLANT_BEAN_SHARECODES) {
-  CKNumber = process.env.PLANT_BEAN_SHARECODES.split('&')[0];
-  PlantBeanShareCodes = process.env.PLANT_BEAN_SHARECODES.split('&')[1];
-} else {
-  console.log(`由于您环境变量(PLANT_BEAN_SHARECODES)里面未提供助力码，故此处运行将会给脚本内置的码进行助力，请知晓！`)
-}
 for (let i = 0; i < Number(CKNumber); i++) {
-  const index = (i + 1 === 1) ? '' : (i + 1);
-  exports['PlantBeanShareCodes' + index] = PlantBeanShareCodes;
+  if (process.env["PLANT_BEAN_SHARECODES"+i.toString()]) {
+    PlantBeanShareCodes = process.env["PLANT_BEAN_SHARECODES"+i.toString()];
+    const index = (i + 1 === 1) ? '' : (i + 1);
+    exports['PlantBeanShareCodes' + index] = PlantBeanShareCodes;
+  } else {
+    break
+  }
 }
