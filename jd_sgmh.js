@@ -269,10 +269,6 @@ function requireConfig() {
     $.shareCodesArr = [];
     if ($.isNode()) {
       for (let i = 0; i < cookiesArr.length); i++) {
-        shareCodes = process.env["FRUITSHARECODES"+i.toString()];
-        $.shareCodesArr.push(shareCodes);
-      }
-      for (let i = 0; i < Number(CKNumber); i++) {
         if (process.env["JDSGMH_SHARECODES"+i.toString()]) {
           shareCodes = process.env["JDSGMH_SHARECODES"+i.toString()];
           $.shareCodesArr.push(shareCodes);
