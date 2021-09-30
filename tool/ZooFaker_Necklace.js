@@ -904,7 +904,7 @@ let utils = {
             ioa: 'fffffftt',
             aj: 'u',
             ci: 'w3.1.0',
-            cf_v: '01',
+            cf_v: '02',
             bd: senddata,
             mj: [1, 0, 0],
             blog: "a",
