@@ -107,6 +107,7 @@ $.shareuuid = "5e81094ee1d640b2996883b48d0c410a"
                   $.msg($.name, "", "跑不起来了~请自己进去一次牧场")
                 }
             }
+            await $.wait(60000)
         }
         if (message.length != 0) {
         if ($.isNode() && process.env.QQXING_NOTIFY_CONTROL) {
