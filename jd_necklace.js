@@ -40,9 +40,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  // console.log(`\n通知：[非法请求] 可以等5分钟左右再次执行脚本\n`);
-  console.log(`\n脚本失效 [非法请求]\n`);
-  return
+  console.log(`\n通知：[非法请求] 可以等5分钟左右再次执行脚本\n`);
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
