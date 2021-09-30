@@ -46,7 +46,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       cookie = cookiesArr[i];
       $.cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-      cooie += `pwdt_id=${$.UserName};`
+      cookie += `pwdt_id=${$.UserName};`
       $.index = i + 1;
       $.isLogin = true;
       $.nickName = '';
