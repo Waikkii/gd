@@ -177,7 +177,7 @@ function redRainId(url) {
 }
 
 function rraUrl() {
-  let url = "http://qyuyful8s.hb-bkt.clouddn.com/jd-half-rain.json";
+  let url = "http://r0a79r6l0.hb-bkt.clouddn.com/jd-half-rain.json";
   if ($.isNode() && process.env.JD_HALF_RRA_URL) {
     url = process.env.JD_HALF_RRA_URL;
   } else if ($.getdata("jdHalfRRAUrl")) {
