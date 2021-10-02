@@ -15,7 +15,11 @@ const activityList = [
     {"actid": "5dbc609b32bd4edf981a844079a467a9", "endTime": 1632931200000},
     {"actid": "de0f54a0769a45e0a369f8c6de9a0192", "endTime": 1633622361000},
     {"actid": "c475acc1f3214c038881abeff5cd6442", "endTime": 1633795200000},
-    {"actid": "68ae48944e414d31b2447f131531aec0", "endTime":1633622399000 },
+    {"actid": "68ae48944e414d31b2447f131531aec0", "endTime": 1633622399000},
+    {"actid": "9d282149fb424ec7b7a907b000d3e61e", "endTime": 2633017599000},
+    {"actid": "f558202c53794a088b9c58d36b8a1aa9", "endTime": 2633017599000},
+    {"actid": "e2bf8a1453494e0699e5b880c09bda20", "endTime": 2633017599000},
+    {"actid": "417e3042d5944a0d8a0eaa01717000c1", "endTime": 2633017599000}
 ]
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
