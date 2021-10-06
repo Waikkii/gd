@@ -99,6 +99,8 @@ const JD_API_HOST = `https://api.m.jd.com/api?appid=jdsupermarket`;
         console.log(`不在白名单内，退出！`);
         continue
       }
+      let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+      await wait(60000);
       //先兑换京豆
       if ($.isNode()) {
         if (process.env.MARKET_COIN_TO_BEANS) {
@@ -255,7 +257,7 @@ async function PrizeIndex() {
           await wait(settimestamp-new Date().getTime()+timedifference+networkdelay);
           ///////////
 
-          for(let j = 0; j < 10; ++j){
+          for(let j = 0; j < 6; ++j){
             if ($.type === 4 && !$.beanType) {
               await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
             } else {
