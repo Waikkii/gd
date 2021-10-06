@@ -36,30 +36,6 @@ const JD_API_HOST = 'https://car-member.jd.com/api/';
             message = '';
             console.log(`=====京东账号${$.index} ${$.UserName}=====`)
             for(let j = 0; j < 10; ++j){
-              
-                ///////////等待0点执行
-                console.log('进入静默等待模式...');
-                let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-                timeset = '00';
-                if (process.env.CAR_EXCHANGE_TIME_SET) {
-                  timeset = process.env.CAR_EXCHANGE_TIME_SET;
-                  console.log('当前设置自定义等待秒数为：'+timeset);
-                } else {
-                  console.log('未查询到变量，设定默认等待秒数为：'+timeset);
-                }
-
-                while(true){
-                  var date = new Date((new Date()).getTime());
-                  s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
-                  m = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes());
-                  h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours());
-                  await wait(100)
-                  if (h=='00'||s==timeset){
-                    break;
-                  }
-                }
-                ///////////
-              
                 await exchange();
             }
         }
