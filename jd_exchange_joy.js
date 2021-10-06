@@ -31,11 +31,23 @@ async function main(id) {
     let txt = await fs.readFileSync('./jdvalidate.txt', 'utf-8');
     let lists = txt.split("\n");
     let validate = lists[id.index - 1];
+    let JDtime='';
+    let networkdelay = 0;
     let params = {
         'url': `https://jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=${$.config['invokeKey']}&validate=${validate}`,
         'cookie': id.cookie
     }
     try {
+        
+        ///////////
+        var timestamp=new Date().getTime();
+        var setdatetemp = (new Date(new Date().setHours(new Date().getHours()+1))).Format("yyyy-MM-dd hh:mm:ss");
+        var setdate = setdatetemp.split(":")[0]+":00:00";
+        var settimestamp = (new Date(setdate)).getTime();
+        let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+        await wait(settimestamp-new Date().getTime()+networkdelay);
+        ///////////
+
         await $.curl(params)
         if ($.source.data) {
             let h = new Date().getHours();
@@ -52,6 +64,7 @@ async function main(id) {
                     'body': `{"buyParam":{"orderSource":"pet","saleInfoId":${i.id}},"deviceInfo":{}}`,
                     'cookie': id.cookie
                 }
+
                 await $.curl(params)
                 let log = '';
                 switch ($.source.errorCode) {
@@ -74,7 +87,7 @@ async function main(id) {
                         log = $.source.errorCode
                         break
                 }
-                console.log(id.user, log, i.giftValue, $.source.currentTime)
+                console.log(id.user, log, i.giftValue, (new Date()).Format("yyyy-MM-dd hh:mm:ss | S"))
                 $.notices(`${i.giftValue} ${log}`, id.user)
                 if (h < 16) {
                     break
@@ -86,4 +99,28 @@ async function main(id) {
     } catch (e) {
         console.log(e.message)
     }
+}
+
+Date.prototype.Format = function (fmt) {
+var e,
+    n = this, d = fmt, l = {
+        "M+": n.getMonth() + 1,
+        "d+": n.getDate(),
+        "D+": n.getDate(),
+        "h+": n.getHours(),
+        "H+": n.getHours(),
+        "m+": n.getMinutes(),
+        "s+": n.getSeconds(),
+        "w+": n.getDay(),
+        "q+": Math.floor((n.getMonth() + 3) / 3),
+        "S+": n.getMilliseconds()
+    };
+/(y+)/i.test(d) && (d = d.replace(RegExp.$1, "".concat(n.getFullYear()).substr(4 - RegExp.$1.length)));
+for (var k in l) {
+    if (new RegExp("(".concat(k, ")")).test(d)) {
+        var t, a = "S+" === k ? "000" : "00";
+        d = d.replace(RegExp.$1, 1 == RegExp.$1.length ? l[k] : ("".concat(a) + l[k]).substr("".concat(l[k]).length))
+    }
+}
+return d;
 }
