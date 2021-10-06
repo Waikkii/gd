@@ -29,6 +29,10 @@ let coinToBeans = $.getdata('coinToBeans') || 0; //兑换多少数量的京豆�
 let jdNotify = true;//是否开启静默运行，默认false关闭(即:奖品兑换成功后会发出通知提示)
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
+let cookiesblock = [];
+let JDtime='';
+let networkdelay = 0;
+let setck = '1-9';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -47,6 +51,25 @@ const JD_API_HOST = `https://api.m.jd.com/api?appid=jdsupermarket`;
   for (let i =0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
     if (cookie) {
+
+      const got = require('got');
+      const body = await got('http://localhost:5701/api/users').json();
+      const users = body.data;
+
+      for(let j = 0; j < setck.split(' ').length; j++){
+          let myindex = setck.split(' ')[j];
+          if (myindex.search('-')!=-1){
+              let start = Number(myindex.split('-')[0]);
+              let end = Number(myindex.split('-')[1]);
+
+              for(let k = 0; k < end-start+1; k++){
+                  cookiesblock.push(users[start+k-1].pt_pin);
+              }
+          } else {
+              cookiesblock.push(users[myindex-1].pt_pin);
+          }
+      }
+
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
       $.index = i + 1;
       $.data = {};
@@ -69,6 +92,11 @@ const JD_API_HOST = `https://api.m.jd.com/api?appid=jdsupermarket`;
         if ($.isNode()) {
           await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName || $.UserName}\n请重新登录获取cookie`);
         }
+        continue
+      }
+
+      if (!cookiesblock.includes($.UserName)){
+        console.log(`不在白名单内，退出！`);
         continue
       }
       //先兑换京豆
@@ -130,35 +158,28 @@ async function PrizeIndex() {
         $.beanerr = `兑换失败,您目前蓝币${$.totalBlue}个,不足以兑换${$.title}所需的${$.blueCost}个`;
         return ;
       } else {
-          ///////////等待0点执行
-          console.log('进入静默等待模式...');
-          let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-          timeset = '00';
-          if (process.env.MARKET_COIN_TIME_SET) {
-            timeset = process.env.MARKET_COIN_TIME_SET;
-            console.log('当前设置自定义等待秒数为：'+timeset);
-          } else {
-            console.log('未查询到变量，设定默认等待秒数为：'+timeset);
-          }
-          
-          while(true){
-            var date = new Date((new Date()).getTime());
-            s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
-            m = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes());
-            h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours());
-            await wait(100)
-            if (h=='00'||s==timeset){
-              break;
-            }
-          }
-          ///////////
+        ///////////
+        await getJDtime()
+        var timestamp=new Date().getTime();
+        var timedifference=timestamp-Number(JDtime);
+        console.log(`京东服务器时间戳：`+JDtime);
+        console.log(`当前服务器时间戳：`+timestamp);
+        console.log(`服务器延迟为`+timedifference+`毫秒`);
+
+        var setdatetemp = (new Date(new Date().setHours(new Date().getHours()+1))).Format("yyyy-MM-dd hh:mm:ss");
+        var setdate = setdatetemp.split(":")[0]+":00:00";
+        var settimestamp = (new Date(setdate)).getTime();
+        console.log("查找到下一次兑换时间为："+setdate);
+        console.log("查找到下一次兑换时间戳为："+settimestamp);
+        console.log("已设定请求调整时间为："+networkdelay+"毫秒");
+        console.log("正在等待"+(settimestamp-new Date().getTime()+timedifference+networkdelay)+"毫秒......");
+        let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+        await wait(settimestamp-new Date().getTime()+timedifference+networkdelay);
+        ///////////
+
         await smtg_obtainPrize(prizeList[0].prizeId);
       
-        var date_final = new Date((new Date()).getTime());
-        h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
-        m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
-        s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
-        console.log('当前时间：'+h_final+m_final+s_final);
+        console.log(`请求兑换API后时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
       }
     } else if (`${coinToBeans}` === '20') {
       if (prizeList[1] && prizeList[1].type === 3) {
@@ -215,38 +236,31 @@ async function PrizeIndex() {
           $.beanerr = `兑换失败,您目前蓝币${$.totalBlue}个,不足以兑换${$.title}所需的${$.blueCost}个`;
           return ;
         } else {
-          ///////////等待0点执行
-          console.log('进入静默等待模式...');
+          ///////////
+          await getJDtime()
+          var timestamp=new Date().getTime();
+          var timedifference=timestamp-Number(JDtime);
+          console.log(`京东服务器时间戳：`+JDtime);
+          console.log(`当前服务器时间戳：`+timestamp);
+          console.log(`服务器延迟为`+timedifference+`毫秒`);
+  
+          var setdatetemp = (new Date(new Date().setHours(new Date().getHours()+1))).Format("yyyy-MM-dd hh:mm:ss");
+          var setdate = setdatetemp.split(":")[0]+":00:00";
+          var settimestamp = (new Date(setdate)).getTime();
+          console.log("查找到下一次兑换时间为："+setdate);
+          console.log("查找到下一次兑换时间戳为："+settimestamp);
+          console.log("已设定请求调整时间为："+networkdelay+"毫秒");
+          console.log("正在等待"+(settimestamp-new Date().getTime()+timedifference+networkdelay)+"毫秒......");
           let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-          timeset = '00';
-          if (process.env.MARKET_COIN_TIME_SET) {
-            timeset = process.env.MARKET_COIN_TIME_SET;
-            console.log('当前设置自定义等待秒数为：'+timeset);
-          } else {
-            console.log('未查询到变量，设定默认等待秒数为：'+timeset);
-          }
-          while(true){
-            var date = new Date((new Date()).getTime());
-            s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
-            m = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes());
-            h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours());
-            await wait(100)
-            if (h=='00'||s==timeset){
-              break;
-            }
-          }
+          await wait(settimestamp-new Date().getTime()+timedifference+networkdelay);
           ///////////
+
           if ($.type === 4 && !$.beanType) {
             await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
           } else {
             await smtg_obtainPrize(prizeId);
           }
-          var date_final = new Date((new Date()).getTime());
-          h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
-          m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
-          s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
-          console.log('try1 当前时间：'+h_final+m_final+s_final);
-          wait(1000)
+          console.log(`请求兑换API后时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
           ///////////
           ///////////
           if ($.type === 4 && !$.beanType) {
@@ -254,12 +268,7 @@ async function PrizeIndex() {
           } else {
             await smtg_obtainPrize(prizeId);
           }
-          var date_final = new Date((new Date()).getTime());
-          h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
-          m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
-          s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
-          console.log('try1 当前时间：'+h_final+m_final+s_final);
-          wait(1000)
+          console.log(`请求兑换API后时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
           ///////////
           ///////////
           if ($.type === 4 && !$.beanType) {
@@ -267,24 +276,14 @@ async function PrizeIndex() {
           } else {
             await smtg_obtainPrize(prizeId);
           }
-          var date_final = new Date((new Date()).getTime());
-          h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
-          m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
-          s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
-          console.log('try2 当前时间：'+h_final+m_final+s_final);
-          wait(1000)
+          console.log(`请求兑换API后时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
           ///////////
           if ($.type === 4 && !$.beanType) {
             await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
           } else {
             await smtg_obtainPrize(prizeId);
           }
-          var date_final = new Date((new Date()).getTime());
-          h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
-          m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
-          s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
-          console.log('try3 当前时间：'+h_final+m_final+s_final);
-          wait(1000)
+          console.log(`请求兑换API后时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
           ///////////
           ///////////
           if ($.type === 4 && !$.beanType) {
@@ -292,12 +291,7 @@ async function PrizeIndex() {
           } else {
             await smtg_obtainPrize(prizeId);
           }
-          var date_final = new Date((new Date()).getTime());
-          h_final = (date_final.getHours() < 10 ? '0'+date_final.getHours() : date_final.getHours()) + ':';
-          m_final = (date_final.getMinutes() < 10 ? '0'+date_final.getMinutes() : date_final.getMinutes()) + ':';
-          s_final = (date_final.getSeconds() < 10 ? '0'+date_final.getSeconds() : date_final.getSeconds());
-          console.log('try4 当前时间：'+h_final+m_final+s_final);
-          wait(1000)
+          console.log(`请求兑换API后时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
           ///////////
         }
       } else {
@@ -307,6 +301,60 @@ async function PrizeIndex() {
     }
   }
 }
+
+
+async function getJDtime() {
+  return new Promise(async (resolve) => {
+      $.get({url: `https://api.m.jd.com/client.action?functionId=queryMaterialProducts&client=wh5`, timeout: 10000,},
+          async (err, resp, data) => {
+              try {
+                  if (err) {
+                      $.logErr(`❌ 账号${$.index} API请求失败，请检查网络后重试\n data: ${JSON.stringify(err, null, 2)}`);
+                  } else {
+                      JDtime = JSON.parse(data).currentTime2;
+                  }
+              } catch (e) {
+                  $.logErr(`======== 账号 ${$.index} ========\nerror:${e}\ndata: ${resp && resp.body}`)
+              } finally {
+                  resolve(data);
+              }
+          }
+      );
+  });
+}
+
+/*
+修改时间戳转换函数，京喜工厂原版修改
+*/
+Date.prototype.Format = function (fmt) {
+  var e,
+      n = this, d = fmt, l = {
+          "M+": n.getMonth() + 1,
+          "d+": n.getDate(),
+          "D+": n.getDate(),
+          "h+": n.getHours(),
+          "H+": n.getHours(),
+          "m+": n.getMinutes(),
+          "s+": n.getSeconds(),
+          "w+": n.getDay(),
+          "q+": Math.floor((n.getMonth() + 3) / 3),
+          "S+": n.getMilliseconds()
+      };
+  /(y+)/i.test(d) && (d = d.replace(RegExp.$1, "".concat(n.getFullYear()).substr(4 - RegExp.$1.length)));
+  for (var k in l) {
+      if (new RegExp("(".concat(k, ")")).test(d)) {
+          var t, a = "S+" === k ? "000" : "00";
+          d = d.replace(RegExp.$1, 1 == RegExp.$1.length ? l[k] : ("".concat(a) + l[k]).substr("".concat(l[k]).length))
+      }
+  }
+  return d;
+}
+
+
+
+
+
+
 //查询白酒类奖品列表API
 function smtg_materialPrizeIndex(timeout = 0) {
   $.materialPrizeIndex = [];
