@@ -255,44 +255,15 @@ async function PrizeIndex() {
           await wait(settimestamp-new Date().getTime()+timedifference+networkdelay);
           ///////////
 
-          if ($.type === 4 && !$.beanType) {
-            await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
-          } else {
-            await smtg_obtainPrize(prizeId);
+          for(let j = 0; j < 10; ++j){
+            if ($.type === 4 && !$.beanType) {
+              await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
+            } else {
+              await smtg_obtainPrize(prizeId);
+            }
+            console.log(`请求兑换API后时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
           }
-          console.log(`请求兑换API后时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
-          ///////////
-          ///////////
-          if ($.type === 4 && !$.beanType) {
-            await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
-          } else {
-            await smtg_obtainPrize(prizeId);
-          }
-          console.log(`请求兑换API后时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
-          ///////////
-          ///////////
-          if ($.type === 4 && !$.beanType) {
-            await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
-          } else {
-            await smtg_obtainPrize(prizeId);
-          }
-          console.log(`请求兑换API后时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
-          ///////////
-          if ($.type === 4 && !$.beanType) {
-            await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
-          } else {
-            await smtg_obtainPrize(prizeId);
-          }
-          console.log(`请求兑换API后时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
-          ///////////
-          ///////////
-          if ($.type === 4 && !$.beanType) {
-            await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
-          } else {
-            await smtg_obtainPrize(prizeId);
-          }
-          console.log(`请求兑换API后时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
-          ///////////
+
         }
       } else {
         console.log(`奖品兑换列表【${coinToBeans}】已下架，请检查活动页面是否存在此商品，如存在请检查您的输入是否正确`);
