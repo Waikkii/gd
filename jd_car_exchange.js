@@ -60,6 +60,8 @@ const JD_API_HOST = 'https://car-member.jd.com/api/';
             console.log(`=====京东账号${$.index} ${$.UserName}=====`)
 
             if (cookiesblock.includes($.UserName)){
+                let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+                await wait(60000);
 
                 await getJDtime()
                 var timestamp=new Date().getTime();
@@ -75,10 +77,9 @@ const JD_API_HOST = 'https://car-member.jd.com/api/';
                 console.log("查找到下一次兑换时间戳为："+settimestamp);
                 console.log("已设定请求调整时间为："+networkdelay+"毫秒");
                 console.log("正在等待"+(settimestamp-new Date().getTime()+timedifference+networkdelay)+"毫秒......");
-                let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
                 await wait(settimestamp-new Date().getTime()+timedifference+networkdelay);
 
-                for(let j = 0; j < 5; ++j){
+                for(let j = 0; j < 6; ++j){
                     await exchange();
                     console.log(`请求兑换API后时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
                 }
