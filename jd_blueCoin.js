@@ -52,9 +52,9 @@ const JD_API_HOST = `https://api.m.jd.com/api?appid=jdsupermarket`;
     cookie = cookiesArr[i];
     if (cookie) {
       
-      var ran = Math.round(Math.random()*20);
-      console.log(`为ninja延时`+ran+`秒`);
-      await $.wait(1000*ran);
+      var ran = Math.round(Math.random()*20000);
+      console.log(`为ninja延时`+ran+`毫秒`);
+      await $.wait(ran);
 
       const got = require('got');
       const body = await got('http://localhost:5701/api/users').json();
