@@ -39,13 +39,13 @@ async function main(id) {
     }
     try {
         
-        ///////////
-        var timestamp=new Date().getTime();
-        var setdatetemp = (new Date(new Date().setHours(new Date().getHours()+1))).Format("yyyy-MM-dd hh:mm:ss");
-        var setdate = setdatetemp.split(":")[0]+":00:00";
-        var settimestamp = (new Date(setdate)).getTime();
-        await $.wait(settimestamp-new Date().getTime()+networkdelay);
-        ///////////
+//         ///////////
+//         var timestamp=new Date().getTime();
+//         var setdatetemp = (new Date(new Date().setHours(new Date().getHours()+1))).Format("yyyy-MM-dd hh:mm:ss");
+//         var setdate = setdatetemp.split(":")[0]+":00:00";
+//         var settimestamp = (new Date(setdate)).getTime();
+//         await $.wait(settimestamp-new Date().getTime()+networkdelay);
+//         ///////////
 
         await $.curl(params)
         if ($.source.data) {
