@@ -44,8 +44,7 @@ async function main(id) {
         var setdatetemp = (new Date(new Date().setHours(new Date().getHours()+1))).Format("yyyy-MM-dd hh:mm:ss");
         var setdate = setdatetemp.split(":")[0]+":00:00";
         var settimestamp = (new Date(setdate)).getTime();
-        let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-        await wait(settimestamp-new Date().getTime()+networkdelay);
+        await $.wait(settimestamp-new Date().getTime()+networkdelay);
         ///////////
 
         await $.curl(params)
