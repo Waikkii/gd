@@ -34,6 +34,10 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 let jdNotify = false;//是否开启静默运行，默认false关闭(即:奖品兑换成功后会发出通知提示)
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
+let cookiesblock = [];
+let JDtime='';
+let networkdelay = 0;
+let setck = '1-9';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -43,19 +47,28 @@ if ($.isNode()) {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 const JD_API_HOST = 'https://jdjoy.jd.com';
-Date.prototype.Format = function (fmt) { //author: meizz
-  var o = {
-    "M+": this.getMonth() + 1, //月份
-    "d+": this.getDate(), //日
-    "h+": this.getHours(), //小时
-    "m+": this.getMinutes(), //分
-    "s+": this.getSeconds(), //秒
-    "S": this.getMilliseconds() //毫秒
-  };
-  if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-  for (var k in o)
-    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-  return fmt;
+Date.prototype.Format = function (fmt) {
+  var e,
+      n = this, d = fmt, l = {
+          "M+": n.getMonth() + 1,
+          "d+": n.getDate(),
+          "D+": n.getDate(),
+          "h+": n.getHours(),
+          "H+": n.getHours(),
+          "m+": n.getMinutes(),
+          "s+": n.getSeconds(),
+          "w+": n.getDay(),
+          "q+": Math.floor((n.getMonth() + 3) / 3),
+          "S+": n.getMilliseconds()
+      };
+  /(y+)/i.test(d) && (d = d.replace(RegExp.$1, "".concat(n.getFullYear()).substr(4 - RegExp.$1.length)));
+  for (var k in l) {
+      if (new RegExp("(".concat(k, ")")).test(d)) {
+          var t, a = "S+" === k ? "000" : "00";
+          d = d.replace(RegExp.$1, 1 == RegExp.$1.length ? l[k] : ("".concat(a) + l[k]).substr("".concat(l[k]).length))
+      }
+  }
+  return d;
 }
 !(async () => {
   if (!cookiesArr[0]) {
@@ -63,6 +76,25 @@ Date.prototype.Format = function (fmt) { //author: meizz
   }
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
+
+      const got = require('got');
+      const body = await got('http://localhost:5701/api/users').json();
+      const users = body.data;
+
+      for(let j = 0; j < setck.split(' ').length; j++){
+          let myindex = setck.split(' ')[j];
+          if (myindex.search('-')!=-1){
+              let start = Number(myindex.split('-')[0]);
+              let end = Number(myindex.split('-')[1]);
+
+              for(let k = 0; k < end-start+1; k++){
+                  cookiesblock.push(users[start+k-1].pt_pin);
+              }
+          } else {
+              cookiesblock.push(users[myindex-1].pt_pin);
+          }
+      }
+
       cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
       $.index = i + 1;
@@ -78,6 +110,14 @@ Date.prototype.Format = function (fmt) { //author: meizz
         }
         continue
       }
+
+      if (!cookiesblock.includes($.UserName)){
+        console.log(`不在白名单内，退出！`);
+        continue
+      }
+      let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+      await wait(60000);
+
       // console.log(`本地时间与京东服务器时间差(毫秒)：${await get_diff_time()}`);
       $.validate = '';
       $.validate = await zooFaker.injectToRequest()
@@ -100,7 +140,7 @@ async function joyReward() {
   try {
     if (new Date().getMinutes() === 59) {
       let nowtime = new Date().Format("s.S")
-      let starttime = process.env.JOY_STARTTIME ? process.env.JOY_STARTTIME : 60;
+      let starttime = process.env.JOY_STARTTIME ? process.env.JOY_STARTTIME : 59;
       if(nowtime < 59) {
         let sleeptime = (starttime - nowtime) * 1000;
         console.log(`等待时间 ${sleeptime / 1000}`);
@@ -219,6 +259,27 @@ async function joyReward() {
     $.logErr(e)
   }
 }
+
+async function getJDtime() {
+  return new Promise(async (resolve) => {
+      $.get({url: `https://api.m.jd.com/client.action?functionId=queryMaterialProducts&client=wh5`, timeout: 10000,},
+          async (err, resp, data) => {
+              try {
+                  if (err) {
+                      $.logErr(`❌ 账号${$.index} API请求失败，请检查网络后重试\n data: ${JSON.stringify(err, null, 2)}`);
+                  } else {
+                      JDtime = JSON.parse(data).currentTime2;
+                  }
+              } catch (e) {
+                  $.logErr(`======== 账号 ${$.index} ========\nerror:${e}\ndata: ${resp && resp.body}`)
+              } finally {
+                  resolve(data);
+              }
+          }
+      );
+  });
+}
+
 function getExchangeRewards() {
   let opt = {
     url: "//jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=JL1VTNRadM68cIMQ",
