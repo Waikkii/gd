@@ -138,15 +138,24 @@ Date.prototype.Format = function (fmt) {
 
 async function joyReward() {
   try {
-    if (new Date().getMinutes() === 59) {
-      let nowtime = new Date().Format("s.S")
-      let starttime = process.env.JOY_STARTTIME ? process.env.JOY_STARTTIME : 59;
-      if(nowtime < 59) {
-        let sleeptime = (starttime - nowtime) * 1000;
-        console.log(`等待时间 ${sleeptime / 1000}`);
-        await zooFaker.sleep(sleeptime)
-      }
-    }
+    ///////////
+    await getJDtime()
+    var timestamp=new Date().getTime();
+    var timedifference=timestamp-Number(JDtime);
+    console.log(`京东服务器时间戳：`+JDtime);
+    console.log(`当前服务器时间戳：`+timestamp);
+    console.log(`服务器延迟为`+timedifference+`毫秒`);
+
+    var setdatetemp = (new Date(new Date().setHours(new Date().getHours()+1))).Format("yyyy-MM-dd hh:mm:ss");
+    var setdate = setdatetemp.split(":")[0]+":00:00";
+    var settimestamp = (new Date(setdate)).getTime();
+    console.log("查找到下一次兑换时间为："+setdate);
+    console.log("查找到下一次兑换时间戳为："+settimestamp);
+    console.log("已设定请求调整时间为："+networkdelay+"毫秒");
+    console.log("正在等待"+(settimestamp-new Date().getTime()+timedifference+networkdelay)+"毫秒......");
+    let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+    await wait(settimestamp-new Date().getTime()+timedifference+networkdelay);
+    ///////////
     for (let j = 0; j <= 10; j++) {
       await getExchangeRewards();
       if ($.getExchangeRewardsRes && $.getExchangeRewardsRes.success) {
