@@ -38,7 +38,7 @@ const JD_API_HOST = 'https://car-member.jd.com/api/';
             await $.wait(ran);
 
             const got = require('got');
-            const body = await got('http://localhost:5701/api/users').json();
+            const body = await got('http://localhost:5701/api/justgetusers').json();
             const users = body.data;
 
             for(let j = 0; j < setck.split(' ').length; j++){
