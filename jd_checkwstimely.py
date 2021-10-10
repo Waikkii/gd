@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*
 '''
-cron: 15 */8 * * * wskey.py
-new Env('wskey转换');
+cron: 15 */6 * * * jd_checkwstimely.py
+new Env('ck实时检测');
+原作者：@Zy143L
+脚本地址：https://github.com/Zy143L/wskey/blob/main/wskey.py
 '''
 
 import socket
@@ -30,29 +32,7 @@ try:
 except:
     logger.info("无推送文件")
 
-ver = 1010
-
-# 登录青龙 返回值 token
-def get_qltoken(username, password):
-    logger.info("Token失效, 新登陆\n")
-    url = "http://127.0.0.1:{0}/api/login".format(port)
-    payload = {
-        'username': username,
-        'password': password
-    }
-    payload = json.dumps(payload)
-    headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-    }
-    try:
-        res = requests.post(url=url, headers=headers, data=payload)
-        token = json.loads(res.text)["data"]['token']
-    except:
-        logger.info("青龙登录失败, 请检查面板状态!")
-        sys.exit(1)
-    else:
-        return token
+ver = 916
 
 # 返回值 Token
 def ql_login():
@@ -66,18 +46,24 @@ def ql_login():
         password = auth["password"]
         token = auth["token"]
         if token == '':
-            return get_qltoken(username, password)
-        else:
-            url = "http://127.0.0.1:{0}/api/user/notification".format(port)
-            headers = {
-                'Authorization': 'Bearer {0}'.format(token),
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36 Edg/94.0.992.38'
+            url = "http://127.0.0.1:{0}/api/login".format(port)
+            payload = {
+                "username": username,
+                "password": password
             }
-            res = requests.get(url=url, headers=headers)
-            if res.status_code == 200:
-                return token
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            try:
+                res = requests.post(url=url, headers=headers, data=payload, verify=False)
+                token = json.loads(res.text)['token']
+            except:
+                logger.info("青龙登录失败, 请检查面板状态!")
+                sys.exit(1)
             else:
-                return get_qltoken(username, password)
+                return token
+        else:
+            return token
     else:
         logger.info("没有发现auth文件, 你这是青龙吗???")
         sys.exit(0)
@@ -275,16 +261,16 @@ def boom():
 
 def update():
     up_ver = int(cloud_arg['update'])
-    if ver >= up_ver:
-        logger.info("当前脚本版本: " + str(ver))
-        logger.info("--------------------\n")
-    else:
-        logger.info("当前脚本版本: " + str(ver) + "新版本: " + str(up_ver))
-        logger.info("存在新版本, 请更新脚本后执行")
-        logger.info("--------------------\n")
-        text = '当前脚本版本: {0}新版本: {1}, 请更新脚本~!'.format(ver, up_ver)
-        send('WSKEY转换', text)
-        # sys.exit(0)
+    # if ver >= up_ver:
+    #     logger.info("当前脚本版本: " + str(ver))
+    #     logger.info("--------------------\n")
+    # else:
+    #     logger.info("当前脚本版本: " + str(ver) + "新版本: " + str(up_ver))
+    #     logger.info("存在新版本, 请更新脚本后执行")
+    #     logger.info("--------------------\n")
+    #     text = '当前脚本版本: {0}新版本: {1}, 请更新脚本~!'.format(ver, up_ver)
+    #     send('WSKEY转换', text)
+    #     # sys.exit(0)
 
 
 def ql_check(port):
