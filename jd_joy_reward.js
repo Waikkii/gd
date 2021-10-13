@@ -158,7 +158,10 @@ async function joyReward() {
     console.log("已设定请求调整时间为："+networkdelay+"毫秒");
     console.log("正在等待"+(settimestamp-new Date().getTime()+timedifference+networkdelay)+"毫秒......");
     let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-    await wait(settimestamp-new Date().getTime()+timedifference+networkdelay);
+    if (new Date().getHours()!=16) {
+        await wait(settimestamp-new Date().getTime()+timedifference+networkdelay);
+    }
+    console.log("不等了，冲！");
     ///////////
     for (let j = 0; j <= 10; j++) {
       await getExchangeRewards();
