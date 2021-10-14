@@ -284,6 +284,25 @@ async function joyReward() {
     $.logErr(e)
   }
 }
+async function getJDtime() {
+  return new Promise(async (resolve) => {
+      $.get({url: `https://api.m.jd.com/client.action?functionId=queryMaterialProducts&client=wh5`, timeout: 10000,},
+          async (err, resp, data) => {
+              try {
+                  if (err) {
+                      $.logErr(`❌ 账号${$.index} API请求失败，请检查网络后重试\n data: ${JSON.stringify(err, null, 2)}`);
+                  } else {
+                      JDtime = JSON.parse(data).currentTime2;
+                  }
+              } catch (e) {
+                  $.logErr(`======== 账号 ${$.index} ========\nerror:${e}\ndata: ${resp && resp.body}`)
+              } finally {
+                  resolve(data);
+              }
+          }
+      );
+  });
+}
 function getExchangeRewards() {
   return new Promise(resolve => {
     let lkt = new Date().getTime()
