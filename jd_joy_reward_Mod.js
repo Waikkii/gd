@@ -80,23 +80,23 @@ Date.prototype.Format = function (fmt) { //author: meizz
                 }
             }
 
-			cookie = cookiesArr[i];
-			$.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-				$.index = i + 1;
-			$.isLogin = true;
-			$.nickName = '' || $.UserName;
-			await TotalBean();
-			console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}****\n`);
-			if (!$.isLogin) {
-				$.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
-					"open-url": "https://bean.m.jd.com/bean/signIndex.action"
-				});
+            cookie = cookiesArr[i];
+            $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+			$.index = i + 1;
+            $.isLogin = true;
+            $.nickName = '' || $.UserName;
+            await TotalBean();
+            console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}****\n`);
+            if (!$.isLogin) {
+            	$.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
+            		"open-url": "https://bean.m.jd.com/bean/signIndex.action"
+            	});
 
-				if ($.isNode()) {
-					await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
-				}
-				continue
-			}
+            	if ($.isNode()) {
+            		await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+            	}
+            	continue
+            }
 
             if (!cookiesblock.includes($.UserName)){
                 console.log(`不在白名单内，退出！`);
