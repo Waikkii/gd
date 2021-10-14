@@ -23,6 +23,9 @@ if ($.isNode() && process.env.JOY_GET20WHEN16) {
 
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
+let JDtime='';
+let networkdelay = 0;
+let setck = '1-9';
 if ($.isNode()) {
 	Object.keys(jdCookieNode).forEach((item) => {
 		cookiesArr.push(jdCookieNode[item])
