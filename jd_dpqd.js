@@ -25,21 +25,26 @@ let vender=''
 let num=0
 let shopname=''
 const token = [
+  "B30902FF38E2329AD719B440E90A5087",
+  "C9E43741BE8BDCC394A1F767F088E59B",
+  "5E4DD4A707A5047D34C3E12B39C61B75",
+  "83CBCE483E8C4A05832162565E20C8CF",
+  "63DCF7ED48BCE0B3AAE8C18C13BB4000",
+  "5BFD60270889439B26FCEA611D299A1B",
+  "B3A9883216190B198C546D21A18E0738",
+  "806AB8851560F6F462489526E3216EA1",
+  "F9B4F1AE95822A31172C333437624725",
   "C3E62BCF3E9D62593FBF634D349D864A",
   "68B823FFD5F0E4326E3256E05E102280",
   "C7DB74FE1C4A277C5255F47E36F91385",
   "2CD290865D5844EA6951B5778A2C7379",
-  "E401DB88AD9518168404A947BD069655",
-  "95FB2047E4912D89A9394B446C118E08",
-  "75FAA5F04813C1F0A642E3C91D25914B",
-  "F8224B1D08529B37C9D59095597B4FC4",
-  "2BCE594700E839C020DAECB2647ED251",
-  "C2E9F41078D748D93D50565869FA81FB",
-  "C6D3B64157ED5ED99AAC9DB0C53F9B5D",
-  "E3B20355174B6A826F2DA3AD5516D76F",
-  "4168671493A138C1C9EF246BB19AFF97",
-  "E5E144FDEC8EF5CFC0F4326CCAB02D4B",
-  "29EE68A6E519413D1F1D11A9D1C2A369"
+  "638D7446A5712C226B334665166ECFD9",
+  "C42A5A817AFEFD928254B42D3249873B",
+  "1278D2D9916E3BAC83FCB2636E85D756",
+  "AB5172B51CF895DB51A9C9CAE86DF17B",
+  "407910EA26539B7058C483ACAAD92EA8",
+  "50A6EFF0F4CFCE65B0FA46CF0A23DB53",
+  "6DA953F013BAF9AC80B074A15752048F"
 ]
 
 if ($.isNode()) {
@@ -214,7 +219,7 @@ function getActivityInfo(token,venderId) {
             mes += "签到"+level+"天,获得"+discount+'豆'
           }
           // console.log(message+mes+'\n')
-          message += mes+'\n'
+          // message += mes+'\n'
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -293,8 +298,8 @@ function taskUrl(token,venderId) {
 
 async function showMsg() {
   if ($.isNode()) {
-    $.msg($.name, '', `****【京东账号${$.index}】${$.nickName}****\n${message}`);
-    allMessage += `****【京东账号${$.index}】${$.nickName}****\n${message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
+    $.msg($.name, '', `【京东账号${$.index}】${$.nickName}\n${message}`);
+    allMessage += `【京东账号${$.index}】${$.nickName}\n${message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
   }
 }
 
