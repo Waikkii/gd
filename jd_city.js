@@ -37,8 +37,8 @@ if ($.isNode()) {
 }
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 let inviteCodes = [
-  'Vt20l6_xHwimdoPWW5gzmq08WwCxQ6QRqDkqOmY_TVc@QNygguWtSQLvMs-aW5h_j6kjK6vPw-Et5hF3DqE@HY3myu-iSA-qfoPLW5h_1gmDVP7rvVFOoT0M1B9oQwvh',
-  'Vt20l6_xHwimdoPWW5gzmq08WwCxQ6QRqDkqOmY_TVc@QNygguWtSQLvMs-aW5h_j6kjK6vPw-Et5hF3DqE@HY3myu-iSA-qfoPLW5h_1gmDVP7rvVFOoT0M1B9oQwvh'
+  'RtGKzbmnQAr3K4ucQYIyh8mMI-N3N8gyXfJIyFy20lOJehl-gg@RtGKzu6gSFyre9WYRdBl0qMhOfJnB9WuyTh2ZFgJl4kSwZfbmQ@RtGKzO-jRF-mK4uSH9Zl1buKVx_cHwN3xaxN--X2KQ9ainy7rg',
+  'RtGKiqjkFFbjJMbEVoxGmiyfYCaVOGaW-AqN31bMW8nVCku1@Qsy9ge6kSQuqds_WW9R_msPO6i24efiA2HzHJ16n9A@RtGKurHyH1bnAPjsTa9NmkkkvZrVMN2Z5DetwLR3GywFZy-L'
 ]
 !(async () => {
   if (!cookiesArr[0]) {
@@ -294,30 +294,21 @@ function shareCodesFormat() {
   })
 }
 function requireConfig() {
-  return new Promise(resolve => {
+  return new Promise(async resolve => {
     console.log(`开始获取${$.name}配置文件\n`);
     //Node.js用户请在jdCookie.js处填写京东ck;
-    let shareCodes = [];
-    if ($.isNode()) {
-      if (process.env.JD_CITY_EXCHANGE) {
-        exchangeFlag = process.env.JD_CITY_EXCHANGE || exchangeFlag;
-      }
-      if (process.env.CITY_SHARECODES) {
-        if (process.env.CITY_SHARECODES.indexOf('\n') > -1) {
-          shareCodes = process.env.CITY_SHARECODES.split('\n');
-        } else {
-          shareCodes = process.env.CITY_SHARECODES.split('&');
-        }
-      }
-    }
+    let shareCodes = []
     console.log(`共${cookiesArr.length}个京东账号\n`);
     $.shareCodesArr = [];
     if ($.isNode()) {
-      Object.keys(shareCodes).forEach((item) => {
-        if (shareCodes[item]) {
-          $.shareCodesArr.push(shareCodes[item])
+      for (let i = 0; i < cookiesArr.length; i++) {
+        if (process.env["CITY_SHARECODES"+i.toString()]) {
+          shareCodes = process.env["CITY_SHARECODES"+i.toString()];
+          $.shareCodesArr.push(shareCodes);
+        } else {
+          break
         }
-      })
+      }
     }
     console.log(`您提供了${$.shareCodesArr.length}个账号的${$.name}助力码\n`);
     resolve()
