@@ -102,6 +102,7 @@ async function main() {
     await takeGetRequest('get_exchange');
     for (let i = $.exChangeList.length -1; i >= 0 ; i--) {
         let oneExchange = $.exChangeList[i];
+        console.log(`奖励：${oneExchange.name}，库存：${oneExchange.stock}`);
         if(exchangeId !== '999' && Number(exchangeId) !== oneExchange.id){
             continue;
         }
@@ -138,7 +139,11 @@ async function doTask(){
     for (let i = 0; i < $.taskList.length; i++) {
         $.oneTask = $.taskList[i];
         if($.oneTask.simpleRecordInfoVo){
-            $.taskDetailList.push($.oneTask.simpleRecordInfoVo);
+            if($.oneTask.simpleRecordInfoVo === Array){
+                $.taskDetailList = $.oneTask.simpleRecordInfoVo;
+            }else{
+                $.taskDetailList.push($.oneTask.simpleRecordInfoVo);
+            }
         }else{
             $.taskDetailList =  $.oneTask.browseShopVo || $.oneTask.shoppingActivityVos || $.oneTask.productInfoVos ||$.oneTask.assistTaskDetailVo;
         }
