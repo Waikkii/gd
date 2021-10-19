@@ -1697,9 +1697,12 @@ function shareCodesFormat() {
   })
 }
 function requireConfig() {
-  return new Promise(resolve => {
+  return new Promise(async resolve => {
     console.log(`开始获取${$.name}配置文件\n`);
-    let shareCodes = [];
+    //Node.js用户请在jdCookie.js处填写京东ck;
+    let shareCodes = []
+    console.log(`共${cookiesArr.length}个京东账号\n`);
+    $.shareCodesArr = [];
     if ($.isNode()) {
       for (let i = 0; i < cookiesArr.length; i++) {
         if (process.env["JDCFD_SHARECODES"+i.toString()]) {
