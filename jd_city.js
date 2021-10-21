@@ -86,6 +86,7 @@ let inviteCodes = [
           } else {
             console.log(`未知错误，跳出`)
             break
+          }
         }
         if ((res && res['status'] && res['status'] === '3') || (res && res.data && res.data.bizCode === -11)) {
           // 助力次数耗尽 || 黑号
