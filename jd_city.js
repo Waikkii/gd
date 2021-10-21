@@ -82,7 +82,7 @@ let inviteCodes = [
             break
           }
           if (res['data']['result']['toasts'] && res['data']['result']['toasts'][0]) {
-            console.log(`助力 【${$.readShareCode[j]}】:${res.data.result.toasts[0].msg}`)
+            console.log(`助力 【${$.readShareCode[i]}】:${res.data.result.toasts[0].msg}`)
           } else {
             console.log(`未知错误，跳出`)
             break
