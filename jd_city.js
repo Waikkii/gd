@@ -32,30 +32,30 @@ let inviteCodes = []
     } else {
         console.log(`脚本默认在10.30日自动开启抽奖,如需现在自动抽奖请设置环境变量  JD_CITY_EXCHANGE 为true`);
     }
-    // for (let i = 0; i < cookiesArr.length && inviteCodes.length === 0; i++) {
-    //     if (cookiesArr[i]) {
-    //         cookie = cookiesArr[i];
-    //         $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-    //         $.index = i + 1;
-    //         $.isLogin = true;
-    //         $.nickName = '';
-    //         message = '';
-    //         await TotalBean();
-    //         console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
-    //         if (!$.isLogin) {
-    //             $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
+    for (let i = 0; i < cookiesArr.length && inviteCodes.length === 0; i++) {
+        if (cookiesArr[i]) {
+            cookie = cookiesArr[i];
+            $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+            $.index = i + 1;
+            $.isLogin = true;
+            $.nickName = '';
+            message = '';
+            await TotalBean();
+            console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
+            if (!$.isLogin) {
+                $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
 
-    //             if ($.isNode()) {
-    //                 await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
-    //             }
-    //             continue
-    //         }
-    //         await main();
-    //     }
-    // }
-    // if(inviteCodes.length === 0){
-    //     return ;
-    // }
+                if ($.isNode()) {
+                    await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+                }
+                continue
+            }
+            await main();
+        }
+    }
+    if(inviteCodes.length === 0){
+        return ;
+    }
     console.log('\n##################开始账号内互助#################\n');
     for (let i = 0; i < cookiesArr.length; i++) {
         cookie = cookiesArr[i];
