@@ -92,7 +92,9 @@ async function jdPlantBean() {
   try {
     console.log(`获取任务及基本信息`)
     await plantBeanIndex();
-    if ($.plantBeanIndexResult.errorCode) {
+    if (!$.plantBeanIndexResult?.errorCode) {
+      //pass
+    } else {
       console.log(`\n活动太火爆了，还是去买买买吧！\n`)
       return
     }
@@ -389,7 +391,7 @@ async function doTask() {
 function showTaskProcess() {
   return new Promise(async resolve => {
     await plantBeanIndex();
-    if ($.plantBeanIndexResult.data.taskList) {
+    if ($.plantBeanIndexResult.data?.taskList) {
       $.taskList = $.plantBeanIndexResult.data.taskList;  
     } else {
       $.taskList = [];
