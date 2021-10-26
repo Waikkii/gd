@@ -92,7 +92,7 @@ async function jdPlantBean() {
   try {
     console.log(`获取任务及基本信息`)
     await plantBeanIndex();
-    if ($.plantBeanIndexResult.errorCode === 'PB101') {
+    if ($.plantBeanIndexResult.errorCode) {
       console.log(`\n活动太火爆了，还是去买买买吧！\n`)
       return
     }
