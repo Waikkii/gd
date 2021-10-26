@@ -391,7 +391,7 @@ async function doTask() {
 function showTaskProcess() {
   return new Promise(async resolve => {
     await plantBeanIndex();
-    if ($.plantBeanIndexResult.data?.taskList) {
+    if ($.plantBeanIndexResult?.data?.taskList) {
       $.taskList = $.plantBeanIndexResult.data.taskList;  
     } else {
       $.taskList = [];
