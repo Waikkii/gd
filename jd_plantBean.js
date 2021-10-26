@@ -74,6 +74,9 @@ let num;
       await shareCodesFormat();
       await jdPlantBean();
       await showMsg();
+      let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+      await wait(2000);
+      console.log(`等待2s`)
     }
   }
   if ($.isNode() && allMessage) {
