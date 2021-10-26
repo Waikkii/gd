@@ -397,7 +397,6 @@ function showTaskProcess() {
       $.taskList = [];
       console.log("未获取到任务")
     }
-    $.taskList = $.plantBeanIndexResult.data.taskList;
     if ($.taskList && $.taskList.length > 0) {
       console.log("     任务   进度");
       for (let item of $.taskList) {
