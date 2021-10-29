@@ -223,7 +223,7 @@ if "qjd_zlzh" in os.environ:
         qjd_zlzh = os.environ["qjd_zlzh"]
         qjd_zlzh = qjd_zlzh.replace('[', '').replace(']', '').replace('\'', '').replace(' ', '').split(',')
         logger.info("已获取并使用Env环境 qjd_zlzh->")
-        logger.infor(qjd_zlzh)
+        logger.info(qjd_zlzh)
 
 def userAgent():
     """
