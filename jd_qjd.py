@@ -42,12 +42,15 @@ UserAgent = ''
 sleepNum = 0.1
 
 import os, re, sys
+import logging
+logging.basicConfig(level=logging.INFO, format='%(message)s')
+logger = logging.getLogger(__name__)
 import random, string
 try:
     import requests
 except Exception as e:
-    print(e, "\n缺少requests 模块，请执行命令安装：python3 -m pip install requests")
-    exit(3)
+    logger.info(str(e) + "\n缺少requests模块, 请执行命令：pip3 install requests\n")
+    sys.exit(1)
 from urllib.parse import unquote
 import json
 import time
@@ -63,7 +66,7 @@ userCount = {}
 message_info = ''''''
 def message(str_msg):
     global message_info
-    print(str_msg)
+    logger.info(str_msg)
     message_info = "{}\n{}".format(message_info, str_msg)
     sys.stdout.flush()
 def getsendNotify(a=0):
@@ -96,7 +99,7 @@ else:
     try:
         from sendNotify import send
     except:
-        print("加载通知服务失败~")
+        logger.info("加载通知服务失败~")
 ###################
 
 ###### 获取cookie
@@ -106,13 +109,13 @@ class getJDCookie(object):
         if os.path.exists(pwd + 'JDCookies.txt'):
             return pwd + 'JDCookies.txt'
         elif os.path.exists('/ql/config/env.sh'):
-            print("当前环境青龙面板新版")
+            logger.info("当前环境青龙面板新版")
             return '/ql/config/env.sh'
         elif os.path.exists('/ql/config/cookie.sh'):
-            print("当前环境青龙面板旧版")
+            logger.info("当前环境青龙面板旧版")
             return '/ql/config/env.sh'
         elif os.path.exists('/jd/config/config.sh'):
-            print("当前环境V4")
+            logger.info("当前环境V4")
             return '/jd/config/config.sh'
         elif os.path.exists(pwd + 'JDCookies.txt'):
             return pwd + 'JDCookies.txt'
@@ -132,7 +135,7 @@ class getJDCookie(object):
                     cks = r.findall(cks)
                     if len(cks) > 0:
                         if 'JDCookies.txt' in ckfile:
-                            print("当前获取使用 JDCookies.txt 的cookie")
+                            logger.info("当前获取使用 JDCookies.txt 的cookie")
                         cookies = ''
                         for i in cks:
                             cookies += i
@@ -145,9 +148,9 @@ class getJDCookie(object):
             if "JD_COOKIE" in os.environ:
                 if len(os.environ["JD_COOKIE"]) > 10:
                     cookies = os.environ["JD_COOKIE"]
-                    print("已获取并使用Env环境 Cookie")
+                    logger.info("已获取并使用Env环境 Cookie")
         except Exception as e:
-            print(f"【getCookie Error】{e}")
+            logger.info(f"【getCookie Error】{e}")
 
     # 检测cookie格式是否正确
     def getUserInfo(self, ck, pinName, userNum):
@@ -171,7 +174,7 @@ class getJDCookie(object):
             return ck, nickname
         except Exception:
             context = f"账号{userNum}【{pinName}】Cookie 已失效！请重新获取。"
-            print(context)
+            logger.info(context)
             return ck, False
 
     def iscookie(self):
@@ -185,7 +188,7 @@ class getJDCookie(object):
             r = re.compile(r"pt_key=.*?pt_pin=.*?;", re.M | re.S | re.I)
             result = r.findall(cookies)
             if len(result) >= 1:
-                print("您已配置{}个账号".format(len(result)))
+                logger.info("您已配置{}个账号".format(len(result)))
                 u = 1
                 for i in result:
                     r = re.compile(r"pt_pin=(.*?);")
@@ -204,13 +207,13 @@ class getJDCookie(object):
                 if len(cookiesList) > 0 and len(userNameList) > 0:
                     return cookiesList, userNameList, pinNameList
                 else:
-                    print("没有可用Cookie，已退出")
+                    logger.info("没有可用Cookie，已退出")
                     exit(3)
             else:
-                print("cookie 格式错误！...本次操作已退出")
+                logger.info("cookie 格式错误！...本次操作已退出")
                 exit(4)
         else:
-            print("cookie 格式错误！...本次操作已退出")
+            logger.info("cookie 格式错误！...本次操作已退出")
             exit(4)
 getCk = getJDCookie()
 getCk.getCookie()
@@ -219,7 +222,8 @@ if "qjd_zlzh" in os.environ:
     if len(os.environ["qjd_zlzh"]) > 1:
         qjd_zlzh = os.environ["qjd_zlzh"]
         qjd_zlzh = qjd_zlzh.replace('[', '').replace(']', '').replace('\'', '').replace(' ', '').split(',')
-        print("已获取并使用Env环境 qjd_zlzh:", qjd_zlzh)
+        logger.info("已获取并使用Env环境 qjd_zlzh->")
+        logger.infor(qjd_zlzh)
 
 def userAgent():
     """
@@ -275,7 +279,7 @@ def getShareCode(ck):
         aNum = 0
         return groupCode, shareCode, sumBeanNumStr, activityId
     except Exception as e:
-        print(f"getShareCode Error", e)
+        logger.info(f"getShareCode Error: {e}")
 
 def helpCode(ck, groupCode, shareCode,u, unum, user, activityId):
     try:
@@ -298,23 +302,23 @@ def helpCode(ck, groupCode, shareCode,u, unum, user, activityId):
         helpToast = jsonp['data']['helpToast']
         pageFlag = jsonp['data']['pageFlag']
         if pageFlag == 0:
-            print(f"账号{unum}【{u}】助力失败! 原因：{helpToast}")
+            logger.info(f"账号{unum}【{u}】助力失败! 原因：{helpToast}")
             if '满' in helpToast:
-                print(f"## 恭喜账号【{user}】团已满，今日累计获得160豆")
+                logger.info(f"## 恭喜账号【{user}】团已满，今日累计获得160豆")
                 return True
             return False
         else:
             if '火' in helpToast:
-                print(f"账号{unum}【{u}】助力失败! 原因：{helpToast}")
+                logger.info(f"账号{unum}【{u}】助力失败! 原因：{helpToast}")
             else:
-                print(f"账号{unum}【{u}】{helpToast} , 您也获得1豆哦~")
+                logger.info(f"账号{unum}【{u}】{helpToast} , 您也获得1豆哦~")
             return False
     except Exception as e:
-        print(f"helpCode Error ", e)
+        logger.info(f"helpCode Error: {e}")
 
 def start():
     scriptName='### 全民抢京豆-助力 ###'
-    print(scriptName)
+    logger.info(scriptName)
     global cookiesList, userNameList, pinNameList, ckNum, beanCount, userCount
     cookiesList, userNameList, pinNameList = getCk.iscookie()
     for ckname in qjd_zlzh:
@@ -324,10 +328,10 @@ def start():
             try:
                 ckNum = pinNameList.index(ckname)
             except:
-                print(f"请检查被助力账号【{ckname}】名称是否正确？提示：助力名字可填pt_pin的值、也可以填账号名。")
+                logger.info(f"请检查被助力账号【{ckname}】名称是否正确？提示：助力名字可填pt_pin的值、也可以填账号名。")
                 continue
 
-        print(f"### 开始助力账号【{userNameList[int(ckNum)]}】###")
+        logger.info(f"### 开始助力账号【{userNameList[int(ckNum)]}】###")
         groupCode, shareCode, sumBeanNumStr, activityId = getShareCode(cookiesList[ckNum])
         if groupCode == 0:
             message(f"## {userNameList[int(ckNum)]}  获取互助码失败。请手动分享后再试~ 或建议早上再跑。")
@@ -345,7 +349,7 @@ def start():
         groupCode, shareCode, sumBeanNumStr, activityId = getShareCode(cookiesList[ckNum])
         userCount[f'{userNameList[ckNum]}'] = sumBeanNumStr
         beanCount += sumBeanNumStr
-    print("\n-------------------------")
+    logger.info("\n-------------------------")
     for i in userCount.keys():
         message(f"账号【{i}】已抢京豆: {userCount[i]}")
     message(f"## 今日累计获得 {beanCount} 京豆")
