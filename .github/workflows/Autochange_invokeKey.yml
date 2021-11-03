@@ -16,9 +16,7 @@ jobs:
 
       - name: Install and Build
         run: |
-          sed -i "s/JL1VTNRadM68cIMQ/q8DNJdpcfRQ69gIx/g" `grep JL1VTNRadM68cIMQ -rl ./`
-          cd tool
-          sed -i "s/JL1VTNRadM68cIMQ/q8DNJdpcfRQ69gIx/g" `grep JL1VTNRadM68cIMQ -rl ./`
+          sed -i "s/JL1VTNRadM68cIMQ/q8DNJdpcfRQ69gIx/g" $(grep JL1VTNRadM68cIMQ -rl ./)
           
       - name: Commit changes
         uses: EndBug/add-and-commit@v4
