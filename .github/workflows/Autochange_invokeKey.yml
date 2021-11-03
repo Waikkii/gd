@@ -17,7 +17,7 @@ jobs:
       - name: Install and Build
         run: |
           sed -i "s/JL1VTNRadM68cIMQ/q8DNJdpcfRQ69gIx/g" `grep JL1VTNRadM68cIMQ -rl ./`
-          cd utils
+          cd tool
           sed -i "s/JL1VTNRadM68cIMQ/q8DNJdpcfRQ69gIx/g" `grep JL1VTNRadM68cIMQ -rl ./`
           
       - name: Commit changes
