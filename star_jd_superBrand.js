@@ -1,10 +1,11 @@
 /*
 双11特务
 APP首页下滑,任务，互助
-cron 10 9,13,16，19 2-8 11 * https://raw.githubusercontent.com/star261/jd/main/scripts/jd_superBrand.js
+cron 10 9,13,16,19,20 2-8 11 * https://raw.githubusercontent.com/star261/jd/main/scripts/jd_superBrand.js
 * */
 const $ = new Env('双11特务');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
@@ -111,6 +112,18 @@ async function main(cookie) {
     let taskList = taskListInfo.result.taskList || [];
     console.log(`\n${userName},获取活动详情成功`);
     let encryptProjectId = activityBaseInfo.encryptProjectId;
+    let activityCardInfo = cardInfo.result.activityCardInfo;
+    if(activityCardInfo.divideTimeStatus === 1 && activityCardInfo.divideStatus === 0 && activityCardInfo.cardStatus === 1){
+        console.log(`${userName},去瓜分`);
+        let lotteryInfo = await takeRequest(cookie,'superBrandTaskLottery',`{"source":"card","activityId":${activityId},"encryptProjectId":"${encryptProjectId}","tag":"divide"}`);
+        console.log(`结果：${JSON.stringify(lotteryInfo)}`);
+        return ;
+    }else if(activityCardInfo.divideTimeStatus === 1 && activityCardInfo.divideStatus === 1 && activityCardInfo.cardStatus === 1){
+        console.log(`${userName},已瓜分`);
+        return ;
+    }else{
+        console.log(`${userName},未集齐或者未到瓜分时间`);
+    }
     await $.wait(2000);
     for (let i = 0; i < taskList.length; i++) {
         let oneTask = taskList[i];
@@ -137,19 +150,53 @@ async function main(cookie) {
             console.log(`执行结果：${JSON.stringify(doInfo)}`);
             await $.wait(3000);
         }
-
+        if(oneTask.assignmentType === 3){
+            console.log(`任务：${oneTask.assignmentName},去执行,请稍稍`);
+            let itemId = oneTask.ext.followShop[0].itemId || '';
+            if(!itemId){
+                console.log(`任务：${oneTask.assignmentName},信息异常`);
+            }
+            let doInfo = await takeRequest(cookie,'superBrandDoTask',`{"source":"card","activityId":${activityId},"encryptProjectId":"${encryptProjectId}","encryptAssignmentId":"${oneTask.encryptAssignmentId}","assignmentType":${oneTask.assignmentType},"itemId":"${itemId}","actionType":0}`);
+            console.log(`执行结果：${JSON.stringify(doInfo)}`);
+            await $.wait(3000);
+        }
+        if(oneTask.assignmentType === 7){
+            console.log(`任务：${oneTask.assignmentName},去执行,请稍稍`);
+            let itemId = oneTask.ext.brandMemberList[0].itemId || '';
+            if(!itemId){
+                console.log(`任务：${oneTask.assignmentName},信息异常`);
+            }
+            let doInfo = await takeRequest(cookie,'superBrandDoTask',`{"source":"card","activityId":${activityId},"encryptProjectId":"${encryptProjectId}","encryptAssignmentId":"${oneTask.encryptAssignmentId}","assignmentType":${oneTask.assignmentType},"itemId":"${itemId}","actionType":0}`);
+            console.log(`执行结果：${JSON.stringify(doInfo)}`);
+            await $.wait(3000);
+        }
         if(oneTask.assignmentType === 5){
             let signList = oneTask.ext.sign2 || [];
             if(signList.length === 0){
                 console.log(`任务：${oneTask.assignmentName},信息异常`);
             }
-            for (let j = 0; j < signList.length; j++) {
-                if(signList[j].status === 1){
-                    console.log(`任务：${oneTask.assignmentName},去执行,请稍稍`);
-                    let itemId = signList[j].itemId;
-                    let doInfo = await takeRequest(cookie,'superBrandDoTask',`{"source":"card","activityId":${activityId},"encryptProjectId":"${encryptProjectId}","encryptAssignmentId":"${oneTask.encryptAssignmentId}","assignmentType":${oneTask.assignmentType},"itemId":"${itemId}","actionType":0,"dropDownChannel":1}`);
-                    console.log(`执行结果：${JSON.stringify(doInfo)}`);
-                    await $.wait(3000);
+            if(oneTask.assignmentName === '首页限时下拉'){
+                for (let j = 0; j < signList.length; j++) {
+                    if(signList[j].status === 1){
+                        console.log(`任务：${oneTask.assignmentName},去执行,请稍稍`);
+                        let itemId = signList[j].itemId;
+                        let doInfo = await takeRequest(cookie,'superBrandDoTask',`{"source":"card","activityId":${activityId},"encryptProjectId":"${encryptProjectId}","encryptAssignmentId":"${oneTask.encryptAssignmentId}","assignmentType":${oneTask.assignmentType},"itemId":"${itemId}","actionType":0,"dropDownChannel":1}`);
+                        console.log(`执行结果：${JSON.stringify(doInfo)}`);
+                        await $.wait(3000);
+                    }
+                }
+            }else if(oneTask.assignmentName === '去首页下拉参与小游戏'){
+                for (let j = 0; j < signList.length; j++) {
+                    if(signList[j].status === 1){
+                        console.log(`任务：${oneTask.assignmentName},去执行,请稍稍`);
+                        let gameInfo = await takeRequest(cookie,'showSecondFloorGameInfo',`{"source":"card"}`);
+                        let secCode = gameInfo.result.activityGameInfo.gameCurrentRewardInfo.secCode;
+                        let gameEncryptAssignmentId = gameInfo.result.activityGameInfo.gameCurrentRewardInfo.encryptAssignmentId;
+                        await $.wait(3000);
+                        let doInfo = await takeRequest(cookie,'superBrandTaskLottery',`{"source":"card","activityId":${activityId},"encryptProjectId":"${encryptProjectId}","encryptAssignmentId":"${gameEncryptAssignmentId}","secCode":"${secCode}"}`);
+                        console.log(`执行结果：${JSON.stringify(doInfo)}`);
+                        await $.wait(3000);
+                    }
                 }
             }
         }
@@ -190,7 +237,7 @@ async function takeRequest(cookie,functionId,bodyInfo){
                 }
             } catch (e) {
                 console.log(data);
-                $.logErr(e, resp)
+                //$.logErr(e, resp)
             } finally {
                 resolve(data.data || {});
             }
