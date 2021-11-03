@@ -16,12 +16,12 @@ jobs:
 
       - name: Install and Build
         run: |
-          sed -i "s/JL1VTNRadM68cIMQ/q8DNJdpcfRQ69gIx/g" $(grep JL1VTNRadM68cIMQ -rl ./)
+          sed -i "s/JL1VTNRadM68cIMQ/q8DNJdpcfRQ69gIx/g" `grep JL1VTNRadM68cIMQ -rl ./`
           
       - name: Commit changes
         uses: EndBug/add-and-commit@v4
         with:
           message: "更新invokeKey"
-          add: "*.js"
+          add: "*.js tool/*.js"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
