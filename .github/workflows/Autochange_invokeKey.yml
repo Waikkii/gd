@@ -1,0 +1,29 @@
+name: Autochange_invokeKey
+
+env:
+  TZ: Asia/Shanghai
+
+on:
+  workflow_dispatch:
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install and Build
+        run: |
+          sed -i "s/q8DNJdpcfRQ69gIx/JL1VTNRadM68cIMQ/g" `grep q8DNJdpcfRQ69gIx -rl ./`
+          cd utils
+          sed -i "s/q8DNJdpcfRQ69gIx/JL1VTNRadM68cIMQ/g" `grep q8DNJdpcfRQ69gIx -rl ./`
+          
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v4
+        with:
+          message: "更新invokeKey"
+          add: "*.js"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
