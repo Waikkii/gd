@@ -65,10 +65,10 @@ if ($.isNode()) {
         }
         await $.wait(2000);
     }
-    if(new Date().getHours() !== 9 && new Date().getHours() !== 10){
-        console.log('\n脚本早上9点到10点直接执行，才会执行账号内互助');
-        return ;
-    }
+//     if(new Date().getHours() !== 9 && new Date().getHours() !== 10){
+//         console.log('\n脚本早上9点到10点直接执行，才会执行账号内互助');
+//         return ;
+//     }
     console.log('\n##################开始账号内互助#################\n');
     for (let j = 0; j < cookiesArr.length; j++) {
         $.cookie = cookiesArr[j];
