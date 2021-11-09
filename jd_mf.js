@@ -42,6 +42,12 @@ let allMessage = '';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
+  // $.authorCode = await getAuthorShareCode('https://raw.githubusercontent.com/Aaron-lv/updateTeam/master/shareCodes/jd_updateCash.json')
+  // if (!$.authorCode) {
+  //   $.http.get({url: 'https://purge.jsdelivr.net/gh/Aaron-lv/updateTeam@master/shareCodes/jd_updateCash.json'}).then((resp) => {}).catch((e) => $.log('刷新CDN异常', e));
+  //   await $.wait(1000)
+  //   $.authorCode = await getAuthorShareCode('https://cdn.jsdelivr.net/gh/Aaron-lv/updateTeam@master/shareCodes/jd_updateCash.json') || []
+  // }
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -117,12 +123,146 @@ async function getInteractionHomeInfo() {
           if (safeGet(data)) {
             data = JSON.parse(data)
             await queryInteractiveInfo(data.result.taskConfig.projectId, "acexinpin0823")
+            $.taskProjectPoolId = data.result.taskConfig.projectPoolId
+            await queryGiftInfo(data.result.giftConfig.projectId, "acexinpin0823")
+            $.giftProjectPoolId = data.result.giftConfig.projectPoolId
           }
         }
       } catch (e) {
         $.logErr(e, resp)
       } finally {
         resolve(data)
+      }
+    })
+  })
+}
+async function queryGiftInfo(encryptProjectId, sourceCode) {
+  const score = await queryInteractiveRewardInfo($.taskProjectPoolId, "wh5", 1)
+  const mfNum = await queryInteractiveRewardInfo(encryptProjectId, sourceCode)
+  console.log(`当前拥有${score}积分`)
+  console.log(`当前拥有${mfNum}魔方`)
+  return new Promise(async (resolve) => {
+    $.post(taskUrl("queryInteractiveInfo", {"encryptProjectId":encryptProjectId,"sourceCode":sourceCode,"ext":{}}), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} queryInteractiveInfo API请求失败，请检查网路重试`)
+        } else {
+          if (safeGet(data)) {
+            data = JSON.parse(data)
+            const { assignmentList } = data
+            let temp = {}
+            for (let assignment of assignmentList ) {
+              const { encryptAssignmentId, rewards, assignmentTimesLimit, exchangeRate } = assignment
+              let type = null
+              const exchangeGoodInfo = rewards.reduce((pre, cur)=>{
+                pre.name.push(cur?.rewardName)
+                pre.num += (cur?.rewardValue / exchangeRate).toFixed(3)
+                type = cur?.rewardType
+                return pre
+              }, {
+                name: [],
+                num: 0,
+              })
+              exchangeGoodInfo.name = exchangeGoodInfo.name.join("/")
+              if (assignmentTimesLimit !== -1) {
+                console.log(`'${exchangeGoodInfo.name}'兑换未开启，开启时间：${assignment.assignmentStartTime}`)
+                continue
+              }
+              Object.assign(exchangeGoodInfo, { encryptAssignmentId, exchangeRate})
+              if (type) {
+                if (!temp.hasOwnProperty(type)) {
+                  temp[type] = exchangeGoodInfo
+                } else {
+                  if (exchangeGoodInfo.num > temp[type].num) {
+                    temp[type] = exchangeGoodInfo
+                  }
+                }
+              }
+            }
+            if (temp.hasOwnProperty("1")) {
+              const {encryptAssignmentId, exchangeRate} = temp["1"]
+              const s = score / exchangeRate | 0
+              let flag = false
+              for (let i=0; i<s; i++) {
+                if (!flag) flag = true
+                await doInteractiveAssignment("", encryptProjectId, sourceCode, encryptAssignmentId, "", "", true)
+                if ($.hot === true) {
+                  return
+                }
+              }
+              if (flag) await queryGiftInfo.apply(this, arguments)
+            }
+            if (temp.hasOwnProperty("3")) {
+              const {encryptAssignmentId, exchangeRate} = temp["3"]
+              const s = mfNum / exchangeRate | 0
+              for (let i=0; i<s; i++) {
+                await doInteractiveAssignment("", encryptProjectId, sourceCode, encryptAssignmentId, "", "", true)
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        resolve()
+      }
+    })
+  })
+}
+async function queryInteractiveRewardInfo(encryptProjectId, sourceCode, type = 0) {
+  const map = {
+    '0': { // 京豆
+      exchangeType: "367",
+      body: {
+        encryptProjectId,
+        sourceCode,
+        ext: {
+          needExchangeRestScore: 1
+        }
+      }
+    },
+    '1': {
+      exchangeType: "368",
+      body: {
+        encryptProjectPoolId: encryptProjectId,
+        sourceCode,
+        ext: {
+          needPoolRewards: 1,
+          needExchangeRestScore: 1
+        }
+      }
+    }
+  }
+  const exchangeType = map?.[type]?.exchangeType
+  if (!exchangeType) {
+    return Promise.resolve(0)
+  }
+  return new Promise(async (resolve) => {
+    $.post(taskUrl("queryInteractiveRewardInfo", map[type].body), async (err, resp, data) => {
+      let res = 0
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} queryInteractiveRewardInfo API请求失败，请检查网路重试`)
+        } else {
+          if (safeGet(data)) {
+            data = JSON.parse(data)
+            const { exchangeRestScoreMap } = data
+            if (exchangeRestScoreMap.hasOwnProperty(exchangeType)) {
+              res = exchangeRestScoreMap[exchangeType]
+            } else {
+              for (let key in exchangeRestScoreMap || []) {
+                res = exchangeRestScoreMap[key]
+                break
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        resolve(res)
       }
     })
   })
@@ -228,9 +368,9 @@ async function qryViewkitCallbackResult(encryptProjectId, encryptAssignmentId, i
     })
   })
 }
-function doInteractiveAssignment(extraType, encryptProjectId, sourceCode, encryptAssignmentId, itemId, actionType = "") {
+function doInteractiveAssignment(extraType, encryptProjectId, sourceCode, encryptAssignmentId, itemId, actionType = "", isExchange) {
   return new Promise((resolve) => {
-    $.post(taskUrl("doInteractiveAssignment", {"encryptProjectId":encryptProjectId,"encryptAssignmentId":encryptAssignmentId,"sourceCode":sourceCode,"itemId":itemId,"actionType":actionType,"completionFlag":"","ext":{}}), (err, resp, data) => {
+    $.post(taskUrl("doInteractiveAssignment", { "encryptProjectId": encryptProjectId, "encryptAssignmentId": encryptAssignmentId, "sourceCode": sourceCode, "itemId": itemId, "actionType": actionType, "completionFlag": "", "ext": isExchange ? { exchangeNum: 1 } : {} }), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -259,6 +399,26 @@ function doInteractiveAssignment(extraType, encryptProjectId, sourceCode, encryp
               if (data.assignmentInfo.completionCnt === data.assignmentInfo.maxTimes) {
                 $.complete = true
                 console.log(`完成成功：获得${data.rewardsInfo.successRewards[$.type][0] ? `${data.rewardsInfo.successRewards[$.type][0].quantity}${data.rewardsInfo.successRewards[$.type][0].rewardName}` : `${data.rewardsInfo.successRewards[$.type].quantityDetails[0].quantity}${data.rewardsInfo.successRewards[$.type].quantityDetails[0].rewardName}`}`)
+              }
+            } else if (isExchange) {
+              if (data.subCode !== "0") {
+                $.hot = true
+                console.log(data.msg)
+              } else {
+                const { rewardsInfo: { successRewards } } = data
+                for (let key in successRewards || {} ) {
+                  const reward = successRewards[key]
+                  if (reward.length) {
+                    for (let rewardGood of reward) {
+                      console.log(`获得${rewardGood.quantity}京豆`)
+                    }
+                  } else {
+                    const { quantityDetails } = reward
+                    for (let rewardGood of quantityDetails) {
+                      console.log(`获得${rewardGood.quantity}魔方`)
+                    }
+                  }
+                }
               }
             }
           }
@@ -513,7 +673,39 @@ function getSign(functionid, body, uuid) {
     })
   })
 }
-
+function getAuthorShareCode(url) {
+  return new Promise(resolve => {
+    const options = {
+      url: `${url}?${new Date()}`, "timeout": 10000, headers: {
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }
+    };
+    if ($.isNode() && process.env.TG_PROXY_HOST && process.env.TG_PROXY_PORT) {
+      const tunnel = require("tunnel");
+      const agent = {
+        https: tunnel.httpsOverHttp({
+          proxy: {
+            host: process.env.TG_PROXY_HOST,
+            port: process.env.TG_PROXY_PORT * 1
+          }
+        })
+      }
+      Object.assign(options, { agent })
+    }
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+        } else {
+          if (data) data = JSON.parse(data)
+        }
+      } catch (e) {
+        // $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+  })
+}
 function TotalBean() {
   return new Promise(async resolve => {
     const options = {
