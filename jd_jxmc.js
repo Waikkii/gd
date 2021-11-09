@@ -21,7 +21,7 @@ const JXUserAgent =  $.isNode() ? (process.env.JX_USER_AGENT ? process.env.JX_US
 const ByType = $.isNode() ? (process.env.BYTYPE ? process.env.BYTYPE : `888`):`888`;
 let cookiesArr = [],token = {},ua = '';
 let scripts_start_time=new Date().getHours();
-console.log(`脚本执行时间为{scripts_start_time}点`);
+console.log(`脚本执行时间为${scripts_start_time}点`);
 $.appId = 10028;
 let activeid = 'null';
 $.inviteCodeList = [];
