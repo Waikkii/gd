@@ -34,10 +34,8 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 let jdNotify = false;//是否开启静默运行，默认false关闭(即:奖品兑换成功后会发出通知提示)
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
-let cookiesblock = [];
 let JDtime='';
 let networkdelay = 0;
-let setck = '1-9';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -76,28 +74,6 @@ Date.prototype.Format = function (fmt) {
   }
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
-      
-      var ran = Math.round(Math.random()*20000);
-      console.log(`为ninja延时`+ran+`毫秒`);
-      await $.wait(ran);
-
-      const got = require('got');
-      const body = await got('http://localhost:5701/api/justgetusers').json();
-      const users = body.data;
-
-      for(let j = 0; j < setck.split(' ').length; j++){
-          let myindex = setck.split(' ')[j];
-          if (myindex.search('-')!=-1){
-              let start = Number(myindex.split('-')[0]);
-              let end = Number(myindex.split('-')[1]);
-
-              for(let k = 0; k < end-start+1; k++){
-                  cookiesblock.push(users[start+k-1].pt_pin);
-              }
-          } else {
-              cookiesblock.push(users[myindex-1].pt_pin);
-          }
-      }
 
       cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
@@ -114,14 +90,6 @@ Date.prototype.Format = function (fmt) {
         }
         continue
       }
-
-      if (!cookiesblock.includes($.UserName)){
-        console.log(`不在白名单内，退出！`);
-        continue
-      }
-      let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-      await wait(60000);
-
       // console.log(`本地时间与京东服务器时间差(毫秒)：${await get_diff_time()}`);
       $.validate = '';
       $.validate = await zooFaker.injectToRequest()
