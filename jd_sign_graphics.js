@@ -8,7 +8,7 @@ npm i png-js 或者 npm i png-js -S
 修改域名 https://jdjoy.jd.com 可以改成ip https://49.7.27.236
 */
 
-const validator = require('./tool/JDJRValidator_Pure.js');
+const validator = require('./tool/smiek_JDJRValidator_Pure.js');
 const Faker=require('./tool/sign_graphics_validate.js') 
 
 const $ = new Env('京东签到图形验证');
@@ -42,8 +42,8 @@ if(process.env.JOY_HOST){
   JD_API_HOST = process.env.JOY_HOST
 }
 getUA()
-$.get = validator.injectToRequest3($.get.bind($), 'channelSign', $.UA)
-$.post = validator.injectToRequest3($.post.bind($), 'channelSign', $.UA)
+$.get = validator.injectToRequest($.get.bind($), 'channelSign', $.UA)
+$.post = validator.injectToRequest($.post.bind($), 'channelSign', $.UA)
 
 const turnTableId = [
   { "name": "PLUS会员定制", "id": 1265, "url": "https://prodev.m.jd.com/mall/active/N9MpLQdxZgiczZaMx2SzmSfZSvF/index.html" },
