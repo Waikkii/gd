@@ -42,8 +42,8 @@ if(process.env.JOY_HOST){
   JD_API_HOST = process.env.JOY_HOST
 }
 getUA()
-$.get = validator.injectToRequest2($.get.bind($), 'channelSign', $.UA)
-$.post = validator.injectToRequest2($.post.bind($), 'channelSign', $.UA)
+$.get = validator.injectToRequest3($.get.bind($), 'channelSign', $.UA)
+$.post = validator.injectToRequest3($.post.bind($), 'channelSign', $.UA)
 
 const turnTableId = [
   { "name": "PLUS会员定制", "id": 1265, "url": "https://prodev.m.jd.com/mall/active/N9MpLQdxZgiczZaMx2SzmSfZSvF/index.html" },
