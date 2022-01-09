@@ -29,9 +29,7 @@ if ($.isNode()) {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
-let inviteCodes = [
-  '-ryUX_gJZGBBYBWRT9zE8Q1IR0FJxuYS',
-]
+let inviteCodes = []
 $.shareCodesArr = [];
 
 !(async () => {
@@ -362,14 +360,6 @@ function shareCodesFormat() {
       }
     }
     if($.index == 1) $.newShareCodes = [...inviteCodes,...$.newShareCodes]
-    try{
-      const readShareCodeRes = await readShareCode();
-      if (readShareCodeRes && readShareCodeRes.code === 200) {
-        $.newShareCodes = [...new Set([...$.newShareCodes, ...(readShareCodeRes.data || [])])];
-      }
-    } catch (e) {
-      console.log(e);
-    }
     console.log(`第${$.index}个京东账号将要助力的好友${JSON.stringify($.newShareCodes)}`)
     resolve();
   })
