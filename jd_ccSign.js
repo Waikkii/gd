@@ -1,8 +1,7 @@
 /*
 领券中心签到
 
-@感谢 ddo 提供sign算法
-@感谢 匿名大佬 提供pin算法
+@感谢 傻逼 提供sign算法
 
 活动入口：领券中心
 更新时间：2021-08-23
@@ -30,6 +29,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
+let sign_url = process.env.SIGN_RUL || '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -152,21 +152,13 @@ function getSign(functionId, body) {
     let data = {
       functionId,
       body: JSON.stringify(body),
-      "client":"android",
-      "clientVersion":"10.3.2"
-    }
-    let Host = ""
-    let HostArr = ['jdsign.cf', 'signer.nz.lu']
-    if (process.env.SIGN_URL) {
-      Host = process.env.SIGN_URL
-    } else {
-      Host = HostArr[Math.floor((Math.random() * HostArr.length))]
+      "client":"apple",
+      "clientVersion":"10.3.0"
     }
     let options = {
-      url: `https://cdn.nz.lu/ddo`,
+      url: sign_url,
       body: JSON.stringify(data),
       headers: {
-        Host,
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
       },
       timeout: 30 * 1000
@@ -174,7 +166,7 @@ function getSign(functionId, body) {
     $.post(options, (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${JSON.stringify(err)}`)
+          console.log(JSON.stringify(err))
           console.log(`${$.name} getSign API请求失败，请检查网路重试`)
         } else {
 
@@ -192,13 +184,8 @@ function getsecretPin(pin) {
     let data = {
       "pt_pin": pin
     }
-    let Host = ""
     let HostArr = ['jdsign.cf', 'signer.nz.lu']
-    if (process.env.SIGN_URL) {
-      Host = process.env.SIGN_URL
-    } else {
-      Host = HostArr[Math.floor((Math.random() * HostArr.length))]
-    }
+    let Host = HostArr[Math.floor((Math.random() * HostArr.length))]
     let options = {
       url: `https://cdn.nz.lu/pin`,
       body: JSON.stringify(data),
