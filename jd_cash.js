@@ -20,7 +20,7 @@ cron "11 1,20 * * *" script-path=jd_cash.js,tag=签到领现金
 ============小火箭=========
 签到领现金 = type=cron,script-path=jd_cash.js, cronexpr="11 1,20 * * *", timeout=3600, enable=true
  */
-const $ = new Env('签到领现金_Panda');
+const $ = new Env('签到领现金');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
