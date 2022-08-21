@@ -40,22 +40,22 @@ let groups = []
         await getUA()
         await getHomeData()
         if (userScore > 1000000) {
-            let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-            await getJDtime()
-            var timestamp=new Date().getTime();
-            var timedifference=timestamp-Number(JDtime);
-            console.log(`京东服务器时间戳：`+JDtime);
-            console.log(`当前服务器时间戳：`+timestamp);
-            console.log(`服务器延迟为`+timedifference+`毫秒`);
+//             let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+//             await getJDtime()
+//             var timestamp=new Date().getTime();
+//             var timedifference=timestamp-Number(JDtime);
+//             console.log(`京东服务器时间戳：`+JDtime);
+//             console.log(`当前服务器时间戳：`+timestamp);
+//             console.log(`服务器延迟为`+timedifference+`毫秒`);
 
-            var setdatetemp = (new Date(new Date().setDate(new Date().getDate()+1))).Format("yyyy-MM-dd hh:mm:ss");
-            var setdate = setdatetemp.split(" ")[0]+" 00:00:00";
-            var settimestamp = (new Date(setdate)).getTime();
-            console.log("查找到下一次兑换时间为："+setdate);
-            console.log("查找到下一次兑换时间戳为："+settimestamp);
-            console.log("已设定请求调整时间为："+networkdelay+"毫秒");
-            console.log("正在等待"+(settimestamp-new Date().getTime()+timedifference+networkdelay)+"毫秒......");
-            await wait(settimestamp-new Date().getTime()+timedifference+networkdelay);
+//             var setdatetemp = (new Date(new Date().setDate(new Date().getDate()+1))).Format("yyyy-MM-dd hh:mm:ss");
+//             var setdate = setdatetemp.split(" ")[0]+" 00:00:00";
+//             var settimestamp = (new Date(setdate)).getTime();
+//             console.log("查找到下一次兑换时间为："+setdate);
+//             console.log("查找到下一次兑换时间戳为："+settimestamp);
+//             console.log("已设定请求调整时间为："+networkdelay+"毫秒");
+//             console.log("正在等待"+(settimestamp-new Date().getTime()+timedifference+networkdelay)+"毫秒......");
+//             await wait(settimestamp-new Date().getTime()+timedifference+networkdelay);
             console.log(`等待结束！兑换20豆！`)
             await exchange()
             console.log(`请求兑换API后时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
